@@ -19,6 +19,11 @@ function App() {
         />
         <Button variant="primary">Refresh</Button> 
       </Stack>
+      <Stack direction="horizontal" gap="2" className="mb-4 justify-content-center bg-success">
+        <Button variant="primary">Daily</Button>
+        <Button variant="primary">Calendar</Button>
+        <Button variant="primary">Summary</Button>
+      </Stack>
     </Container>
   );
 }

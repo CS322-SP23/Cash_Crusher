@@ -1,10 +1,44 @@
-import React, { useState } from 'react';
-import { Container, Row, Col, Button, Table } from 'react-bootstrap';
-import DatePicker from 'react-datepicker';
-import 'react-datepicker/dist/react-datepicker.css';
+import React, { useState } from "react";
+import { Container, Row, Col, Button, Table } from "react-bootstrap";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 function App() {
   const [startDate, setStartDate] = useState(new Date());
+  const [transactions, setTransactions] = useState([]);
+  const [date, setDate] = useState("");
+  const [description, setDescription] = useState("");
+  const [category, setCategory] = useState("");
+  const [amount, setAmount] = useState("");
+
+  const handleChange = (event) => {
+    if (event.target.name === "date") {
+      setDate(event.target.value);
+    } else if (event.target.name === "description") {
+      setDescription(event.target.value);
+    } else if (event.target.name === "category") {
+      setCategory(event.target.value);
+    } else if (event.target.name === "amount") {
+      setAmount(event.target.value);
+    }
+  };
+
+  const addTransaction = () => {
+    const newTransaction = {
+      date: date,
+      description: description,
+      category: category,
+      amount: amount
+    };
+
+    setTransactions([...transactions, newTransaction]);
+  };
+
+  const deleteTransaction = (index) => {
+    let newTransactions = [...transactions];
+    newTransactions.splice(index, 1);
+    setTransactions(newTransactions);
+  };
 
   return (
     <Container fluid className="vh-100 bg-secondary">
@@ -15,7 +49,7 @@ function App() {
       </Row>
       <Row className="h-100">
         <Col xs={12} md={9} className="bg-light p-5">
-          <Row className="mb-4">
+          <Row>
             <Col>
               <h2 className="mb-3">Transaction History</h2>
               <DatePicker
@@ -30,6 +64,50 @@ function App() {
               <Button variant="primary">Refresh</Button>
             </Col>
           </Row>
+          <Row className="mt-5">
+            <Col>
+              <input
+                type="date"
+                name="date"
+                value={date}
+                onChange={handleChange}
+              />
+            </Col>
+            <Col>
+            <label>Description</label>
+              <input
+                type="text"
+                name="description"
+                value={description}
+                onChange={handleChange}
+              />
+            </Col>
+            <Col>
+            <label>Category</label>
+              <input
+                type="text"
+                name="category"
+                value={category}
+                onChange={handleChange}
+              />
+            </Col>
+            <Col>
+            <label>Amount</label>
+              <input
+                type="text"
+                name="amount"
+                value={amount}
+                onChange={handleChange}
+              />
+            </Col>
+          </Row>
+          <Row className="mt-4">
+            <Col>
+              <Button variant="primary" onClick={addTransaction}>
+                Add Transaction
+              </Button>
+            </Col>
+          </Row>
           <Table striped bordered hover>
             <thead>
               <tr>
@@ -40,7 +118,22 @@ function App() {
               </tr>
             </thead>
             <tbody>
-              {/* Put transaction here. You copied the format to a sticky note on your computer */}
+              {transactions.map((transaction, index) => (
+                <tr key={index}>
+                  <td>{transaction.date}</td>
+                  <td>{transaction.description}</td>
+                  <td>{transaction.category}</td>
+                  <td className="text-danger">{transaction.amount}</td>
+                  <td>
+                    <Button
+                      variant="danger"
+                      onClick={() => deleteTransaction(index)}
+                    >
+                      Delete
+                    </Button>
+                  </td>
+                </tr>
+              ))}
             </tbody>
           </Table>
         </Col>

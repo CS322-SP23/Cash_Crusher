@@ -20,7 +20,10 @@ const PieChart = () => {
       
     return (
       <MDBContainer>
-        <Pie data={data} />
+        <Pie data={data} 
+        width={"30%"}
+        options={{ maintainAspectRatio: false }}
+        />
       </MDBContainer>
     );
   }

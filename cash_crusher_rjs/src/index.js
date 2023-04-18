@@ -2,8 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import TabsExample from './selynBranch';
-import PieChart from './PieChart';
+import ThreeTabs from './ThreeTabs';
 
 import '@fortawesome/fontawesome-free/css/all.min.css';  
 import 'bootstrap-css-only/css/bootstrap.min.css';  
@@ -13,8 +12,7 @@ const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
     <App />
-    <TabsExample />
-    <PieChart />
+    <ThreeTabs />
   </React.StrictMode>
 );
 

@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Container, Row, Col, Button, Table, Stack } from "react-bootstrap";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import React, { useState, useEffect } from "react";
 
 function App() {
   const [startDate, setStartDate] = useState(new Date());
@@ -39,6 +40,19 @@ function App() {
     newTransactions.splice(index, 1);
     setTransactions(newTransactions);
   };
+
+  const [data, setData] = useState([{}])
+
+  // retrieve data from flask
+  
+    useEffect(() => {
+      fetch("https://selynlee-bug-free-happiness-5rw9j9jw59rc4w7w-5000.preview.app.github.dev/hello").then(
+        res => res.json()).then(
+          data => {
+            setData(data)
+            console.log(data)
+          })
+    }, [])
 
   return (
     <Container fluid className="vh-100 bg-secondary">
@@ -161,5 +175,6 @@ function App() {
     </Container>
   );
 }
+
 
 export default App;

@@ -21,11 +21,6 @@ function APIService() {
   
   //this sends the received data from the parent to child class component for it to graph
   
-return (
-    <div className="APIService">
-      <LineChart allData={[data['dates'], data['open_price']]} />
-    </div>
-  );
 }
 
 export default APIService;

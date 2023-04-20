@@ -74,8 +74,8 @@ function App() {
               />
             </Col>
             <Col>
-            <label>Description</label>
               <input
+                placeholder="C-Store, Gizmo, Pho Lover "
                 type="text"
                 name="description"
                 value={description}
@@ -83,8 +83,8 @@ function App() {
               />
             </Col>
             <Col>
-            <label>Category</label>
               <input
+                placeholder="Personal, Savings, etc"
                 type="text"
                 name="category"
                 value={category}
@@ -92,8 +92,8 @@ function App() {
               />
             </Col>
             <Col>
-            <label>Amount</label>
               <input
+                placeholder="How much did it cost?"
                 type="text"
                 name="amount"
                 value={amount}

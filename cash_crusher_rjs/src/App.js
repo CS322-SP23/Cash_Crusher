@@ -79,12 +79,13 @@ function App() {
         />
         <Button variant="primary">Refresh</Button>
       </Stack>
+      </Container>
 );
 
 
   // retrieve data from flask
   
-    useEffect(() = {
+    useEffect(() => {
       fetch("https://selynlee-bug-free-happiness-5rw9j9jw59rc4w7w-5000.preview.app.github.dev/hello").then(
         res => res.json()).then(
           data => {
@@ -213,6 +214,6 @@ function App() {
       </Row>
     </Container>
   );
-  
+}
 
 export default App;

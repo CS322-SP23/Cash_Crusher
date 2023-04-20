@@ -1,7 +1,10 @@
-import React, { useState } from 'react';
+
+import { Button, Stack } from "react-bootstrap";
+import Container from "react-bootstrap/Container";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import React, { useState, useEffect } from "react";
 import { Container, Stack, Button, Table } from 'react-bootstrap';
-import DatePicker from 'react-datepicker';
-import 'react-datepicker/dist/react-datepicker.css';
 
 function App() {
   const [startDate, setStartDate] = useState(new Date());
@@ -26,6 +29,19 @@ function App() {
     const amount = Number(form.elements.amount.value);
     addTransaction(date, description, category, amount);
   };
+
+  const [data, setData] = useState([{}])
+
+  // retrieve data from flask
+  
+    useEffect(() => {
+      fetch("https://selynlee-bug-free-happiness-5rw9j9jw59rc4w7w-5000.preview.app.github.dev/hello").then(
+        res => res.json()).then(
+          data => {
+            setData(data)
+            console.log(data)
+          })
+    }, [])
 
   return (
     <Container>
@@ -81,5 +97,6 @@ function App() {
     </Container>
   );
 }
+
 
 export default App;

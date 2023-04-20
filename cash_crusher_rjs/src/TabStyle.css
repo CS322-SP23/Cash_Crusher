@@ -1,0 +1,17 @@
+.menuBar{
+    /* padding: 1rem; */
+    background: #be5eff;
+    width: 100%;
+    margin-bottom: 1rem;
+}
+.tabs li{
+    font-size: 1rem;
+    font-weight: bold;
+    display: inline-block;
+    color: #efefef;
+    padding: 1rem;
+}
+.tabs li.active{
+    background-color: #6f03b7;
+    height: 100%;
+}

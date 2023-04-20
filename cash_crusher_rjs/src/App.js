@@ -1,7 +1,10 @@
+
 import React, { useState, useEffect } from "react";
 import { Container, Row, Col, Button, Table, Stack } from "react-bootstrap";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import Container from "react-bootstrap/Container";
+
 
 function App() {
   const [startDate, setStartDate] = useState(new Date());
@@ -40,7 +43,45 @@ function App() {
     setTransactions(newTransactions);
   };
 
+
   const [data, setData] = useState([{}])
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    const form = event.target;
+    const date = new Date(form.elements.date.value);
+    const description = form.elements.description.value;
+    const category = form.elements.category.value;
+    const amount = Number(form.elements.amount.value);
+    addTransaction(date, description, category, amount);
+  };
+
+  const [data, setData] = useState([{}])
+
+  // retrieve data from flask
+  
+    useEffect(() => {
+      fetch("https://selynlee-bug-free-happiness-5rw9j9jw59rc4w7w-5000.preview.app.github.dev/hello").then(
+        res => res.json()).then(
+          data => {
+            setData(data)
+            console.log(data)
+          })
+    }, [])
+
+  return (
+    <Container>
+      <Stack direction="horizontal" gap="2" className="mb-4 justify-content-center bg-success">
+        <h1 className="text-white p-3">Transactions</h1>
+        <DatePicker
+          selected={startDate}
+          onChange={(date) => setStartDate(date)}
+          dateFormat="MM/yyyy"
+          showMonthYearPicker
+        />
+        <Button variant="primary">Refresh</Button>
+      </Stack>
+
 
   // retrieve data from flask
   

@@ -17,10 +17,6 @@ function APIService() {
           console.log(data)
         })
   }, [])
-
   
-  //this sends the received data from the parent to child class component for it to graph
-  
-}
 
 export default APIService;

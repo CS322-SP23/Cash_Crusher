@@ -1,6 +1,5 @@
 import logo from './logo.svg';
 import './App.css';
-import LineChart from './linechart'
 import React, { useState, useEffect } from 'react'
 
 function APIService() {

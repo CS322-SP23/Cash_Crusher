@@ -1,31 +1,61 @@
 import React from "react";
 import { MDBContainer } from "mdbreact";
 import { Pie } from "react-chartjs-2";
-import {Chart, ArcElement} from 'chart.js'
-Chart.register(ArcElement);
+//import {Chart, ArcElement} from 'chart.js'
+//Chart.register(ArcElement);
+import { Chart as ChartJS, ArcElement, Tooltip, Legend} from 'chart.js';
+
+ChartJS.register(
+  ArcElement,
+  Tooltip,
+  Legend
+);
 
 const PieChart = () => {
     
-    // Sample data
     const data = {
-      labels: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+      labels: ["Cat1", "Cat2", "Cat3"],
         datasets: [
           {
-            label: "Hours Studied in Geeksforgeeks",
-            data: [2, 5, 6, 7, 3],
-            backgroundColor: ["blue", "green", "yellow", "pink", "orange"],
+            label: "Expenditure accroding to the categories",
+            data: [2, 5, 7],
+            backgroundColor: ["lightgreen", "yellow", "green"],
           }
-        ]
+        ] 
+    
+    };
+    const options = {
+      responsive: true
     }
       
     return (
+      <div 
+        style={
+          {
+          padding: '20px',
+          width: '50%'
+          }
+        } >
+        <Pie
+          data = {data}
+          options = {options}
+        >
+
+        </Pie>
+
+        </div>
+
+      /*
       <MDBContainer>
         <Pie data={data} 
+        padding={"20px"}
         width={"30%"}
         options={{ maintainAspectRatio: false }}
         />
       </MDBContainer>
+      */
     );
+    
   }
       
   export default PieChart;

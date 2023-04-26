@@ -1,9 +1,7 @@
-import React, { useState } from "react";
-import { Container, Row, Col, Button, Table } from "react-bootstrap";
+import React, { useState, useEffect } from "react";
+import { Container, Row, Col, Button, Table, Stack } from "react-bootstrap";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import LoginButton from "./components/LoginButton";
-import LogoutButton from "./components/LogoutButton";
 
 function App() {
   const [startDate, setStartDate] = useState(new Date());
@@ -41,12 +39,21 @@ function App() {
     newTransactions.splice(index, 1);
     setTransactions(newTransactions);
   };
+
+  const [data, setData] = useState([{}])
+
+  // retrieve data from flask
   
+    useEffect(() => {
+      fetch("https://selynlee-bug-free-happiness-5rw9j9jw59rc4w7w-5000.preview.app.github.dev/hello").then(
+        res => res.json()).then(
+          data => {
+            setData(data)
+            console.log(data)
+          })
+    }, [])
 
   return (
-  <>
-    <LoginButton />
-    <LogoutButton />
     <Container fluid className="vh-100 bg-secondary">
       <Row className="bg-primary text-light py-5">
         <Col>
@@ -146,20 +153,17 @@ function App() {
         <Col xs={12} md={3} className="bg-light py-5">
           <h3 className="text-center mb-4">Accounts</h3>
           <ul className="list-unstyled">
-            <li className="mb-2"> 
-            {/*eslint-disable-next-line*/}
+            <li className="mb-2">
               <a href="#" className="text-decoration-none text-dark">
-                Checking 
+                Checking
               </a>
             </li>
             <li className="mb-2">
-              {/*eslint-disable-next-line*/}
               <a href="#" className="text-decoration-none text-dark">
                 Savings
               </a>
             </li>
             <li className="mb-2">
-              {/*eslint-disable-next-line*/}
               <a href="#" className="text-decoration-none text-dark">
                 Credit Card
               </a>
@@ -168,7 +172,6 @@ function App() {
         </Col>
       </Row>
     </Container>
-  </>
   );
 }
 

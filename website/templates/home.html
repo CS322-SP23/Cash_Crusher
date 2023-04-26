@@ -1,5 +1,12 @@
 {% extends "base.html" %}
 {% block title %}Home{% endblock %}
 {% block content %} 
-    <h1>The Home Page</h1>
+    <div id="react-app"></div>
+    <script src="react-app/static/js/main.a9221231.js"></script>
+    <script>
+        ReactDOM.render(
+            React.createElement(App),
+            document.getElementById('react-app')
+        );
+    </script>
 {% endblock %}

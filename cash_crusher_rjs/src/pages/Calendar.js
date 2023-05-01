@@ -4,12 +4,12 @@ import { Icon } from '@iconify/react';
 import { format, addMonths, subMonths, isSameMonth, isSameDay } from 'date-fns';
 import { startOfMonth, endOfMonth, startOfWeek, endOfWeek } from 'date-fns';
 import { addDays, parse } from 'date-fns';
-//import { initializeApp, getApp } from "firebase/app";
-//import firebaseConfig from '../firebase';
-//import { getFirestore, collection, getDocs } from "firebase/firestore";
-//import "firebase/auth";
+import { initializeApp, getApp } from "firebase/app";
+import firebaseConfig from '../firebase';
+import { getFirestore, collection, getDocs } from "firebase/firestore";
+import "firebase/auth";
 
-//let firebaseApp;
+let firebaseApp;
 
 const RenderHeader = ({ currentMonth, prevMonth, nextMonth }) => {
   return (
@@ -62,45 +62,45 @@ const RenderCells = ({ currentMonth, selectedDate, onDateClick }) => {
       const cloneDay = day;
       days.push(
         <div
-        className={`col cell ${
-            !isSameMonth(day, monthStart)
-                ? 'disabled'
-                : isSameDay(day, selectedDate)
+          className={`col cell ${!isSameMonth(day, monthStart)
+              ? 'disabled'
+              : isSameDay(day, selectedDate)
                 ? 'selected'
                 : format(currentMonth, 'M') !== format(day, 'M')
-                ? 'not-valie'
-                : 'valid'
-              }`}
-              key={day}
-              onClick={() => onDateClick(parse(cloneDay))}
-      >
-              <span
-                  className={
-                    format(currentMonth, 'M') !== format(day, 'M')
-                      ? 'text not-valid'
-                      : ''
-                  }
-              >
-                {formattedDate}
-              </span>
-      </div>,
-      );
-  
-      day = addDays(day, 1);
-      }
-      rows.push(
-        <div className="row" key={day}>
-          {days}
+                  ? 'not-valie'
+                  : 'valid'
+            }`}
+          key={day}
+          onClick={() => onDateClick(parse(cloneDay, 'yyyy-MM-dd', new Date()))}
+        >
+          <span
+            className={
+              format(currentMonth, 'M') !== format(day, 'M')
+                ? 'text not-valid'
+                : ''
+            }
+          >
+            {formattedDate}
+          </span>
         </div>,
       );
-      days = [];
+
+      day = addDays(day, 1);
     }
-    return <div className="body">{rows}</div>;
-  };
+    rows.push(
+      <div className="row" key={day.getTime()}>
+        {days}
+      </div>,
+
+    );
+    days = [];
+  }
+  return <div className="body">{rows}</div>;
+};
 
 const Calendar = () => {
   const [currentMonth, setCurrentMonth] = useState(new Date());
-  const [selectedData, setSelectedDate] = useState(new Date());
+  const [selectedDate, setSelectedDate] = useState(new Date());
 
   const prevMonth = () => {
     setCurrentMonth(subMonths(currentMonth, 1));
@@ -121,9 +121,9 @@ const Calendar = () => {
       <RenderDays />
       <RenderCells
         currentMonth={currentMonth}
-        selectedData={selectedData}
+        selectedDate={selectedDate}
         onDateClick={onDateClick}
-        />
+      />
     </div>
   );
 

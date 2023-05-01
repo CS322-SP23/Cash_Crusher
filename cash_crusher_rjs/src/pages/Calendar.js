@@ -1,13 +1,15 @@
-import React, { Component } from "react";
+//import React, { Component } from "react";
 import { useState } from 'react';
 import { Icon } from '@iconify/react';
-import { format, addMonths, subMonths } from 'date-fns';
-import { initializeApp, getApp } from "firebase/app";
-import firebaseConfig from '../firebase';
-import { getFirestore, collection, getDocs } from "firebase/firestore";
-import "firebase/auth";
+import { format, addMonths, subMonths, isSameMonth, isSameDay } from 'date-fns';
+import { startOfMonth, endOfMonth, startOfWeek, endOfWeek } from 'date-fns';
+import { addDays, parse } from 'date-fns';
+//import { initializeApp, getApp } from "firebase/app";
+//import firebaseConfig from '../firebase';
+//import { getFirestore, collection, getDocs } from "firebase/firestore";
+//import "firebase/auth";
 
-let firebaseApp;
+//let firebaseApp;
 
 const RenderHeader = ({ currentMonth, prevMonth, nextMonth }) => {
   return (
@@ -28,6 +30,74 @@ const RenderHeader = ({ currentMonth, prevMonth, nextMonth }) => {
   );
 };
 
+const RenderDays = () => {
+  const days = [];
+  const date = ['Sun', 'Mon', 'Tue', 'Wed', 'Thrs', 'Fri', 'Sat'];
+
+  for (let i = 0; i < 7; i++) {
+    days.push(
+      <div className="col" key={i}>
+        {date[i]}
+      </div>,
+    );
+  }
+
+  return <div className="days row">{days}</div>;
+};
+
+const RenderCells = ({ currentMonth, selectedDate, onDateClick }) => {
+  const monthStart = startOfMonth(currentMonth);
+  const monthEnd = endOfMonth(monthStart);
+  const startDate = startOfWeek(monthStart);
+  const endDate = endOfWeek(monthEnd);
+
+  const rows = [];
+  let days = [];
+  let day = startDate;
+  let formattedDate = '';
+
+  while (day <= endDate) {
+    for (let i = 0; i < 7; i++) {
+      formattedDate = format(day, 'd');
+      const cloneDay = day;
+      days.push(
+        <div
+        className={`col cell ${
+            !isSameMonth(day, monthStart)
+                ? 'disabled'
+                : isSameDay(day, selectedDate)
+                ? 'selected'
+                : format(currentMonth, 'M') !== format(day, 'M')
+                ? 'not-valie'
+                : 'valid'
+              }`}
+              key={day}
+              onClick={() => onDateClick(parse(cloneDay))}
+      >
+              <span
+                  className={
+                    format(currentMonth, 'M') !== format(day, 'M')
+                      ? 'text not-valid'
+                      : ''
+                  }
+              >
+                {formattedDate}
+              </span>
+      </div>,
+      );
+  
+      day = addDays(day, 1);
+      }
+      rows.push(
+        <div className="row" key={day}>
+          {days}
+        </div>,
+      );
+      days = [];
+    }
+    return <div className="body">{rows}</div>;
+  };
+
 const Calendar = () => {
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [selectedData, setSelectedDate] = useState(new Date());
@@ -38,6 +108,9 @@ const Calendar = () => {
   const nextMonth = () => {
     setCurrentMonth(addMonths(currentMonth, 1));
   };
+  const onDateClick = (day) => {
+    setSelectedDate(day);
+  };
   return (
     <div className="calendar">
       <RenderHeader
@@ -45,8 +118,12 @@ const Calendar = () => {
         prevMonth={prevMonth}
         nextMonth={nextMonth}
       />
-      <div className="days">Days</div>
-      <div className="body">Cells</div>
+      <RenderDays />
+      <RenderCells
+        currentMonth={currentMonth}
+        selectedData={selectedData}
+        onDateClick={onDateClick}
+        />
     </div>
   );
 

@@ -1,15 +1,18 @@
+
 import React, { useState } from "react";
 import {BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { Container, Row, Col, Button, Table, Form } from "react-bootstrap";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import Summary from "./pages/Summary";
-import Daily from "./pages/Daily";
 import Calendar from "./pages/Calendar";
 import ThreeTabs from "./ThreeTabs";
 import firebaseConfig from './firebase';
 import { initializeApp, getApp } from "firebase/app";
 import { getFirestore, collection, addDoc, Timestamp } from "firebase/firestore";
+
+import LoginButton from "./components/LoginButton";
+import LogoutButton from "./components/LogoutButton";
 
 
 
@@ -107,14 +110,10 @@ function App() {
 
   return (
     <>
-      <ThreeTabs />
-      <Router>
-      <Routes>
-      <Route exact path="/summary" component={Summary} />
+    <LoginButton/>
+    <LogoutButton/>
 
-        <Route exact path="/daily" component={Daily} />
-        <Route exact path="/calendar" component={Calendar} />
-      </Routes>
+    
 
         <Container fluid className="vh-100 bg-secondary">
         <Row className="bg-primary text-light py-5">
@@ -132,9 +131,6 @@ function App() {
                   showMonthYearPicker
                   className="form-control"
                 />
-              </Col>
-              <Col className="text-end">
-                <Button variant="primary">Refresh</Button>
               </Col>
             </Row>
             <Row className="mt-5">
@@ -240,7 +236,6 @@ function App() {
         </Col>
       </Row>
     </Container>
-    </Router>
     </>
   );
 }

@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-
+import Monthly from "./Monthly";
 
 class Calendar extends React.Component{
     constructor(props) {
@@ -12,7 +12,7 @@ class Calendar extends React.Component{
 
     render(){
         return(
-            <div>Calendar Page</div>
+            <div><Monthly /></div>
         )
     }
   }

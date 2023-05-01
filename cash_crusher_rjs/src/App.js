@@ -12,6 +12,7 @@ function App() {
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState("");
   const [amount, setAmount] = useState("");
+  const events = [{ title: "today's event", date: new Date() }];
 
   const handleChange = (event) => {
     if (event.target.name === "date") {
@@ -55,6 +56,7 @@ function App() {
     addTransaction(date, description, category, amount);
   };
 
+
   // retrieve data from flask
   
     useEffect(() => {
@@ -79,6 +81,7 @@ function App() {
         <Button variant="primary">Refresh</Button>
       </Stack>
       </Container>
+
 );
 
 

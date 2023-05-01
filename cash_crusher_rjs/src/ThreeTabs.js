@@ -24,6 +24,7 @@ class ThreeTabs extends React.Component{
 
   render(){
     return(
+      <div style={{ width: '30%'}}>
       <div className="wrap">
         <div className="menuBar">
           <ul className="tabs">
@@ -35,6 +36,7 @@ class ThreeTabs extends React.Component{
         <div className="contentArea">
           {tabList[this.state.tab]}
         </div>
+      </div>
       </div>
     )
   }

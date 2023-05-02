@@ -110,11 +110,6 @@ function App() {
 
   return (
     <>
-    <LoginButton/>
-    <LogoutButton/>
-
-    
-
         <Container fluid className="vh-100 bg-secondary">
         <Row className="bg-primary text-light py-5">
           <Col></Col>

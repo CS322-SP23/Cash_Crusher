@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import {BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { Container, Row, Col, Button, Table, Form } from "react-bootstrap";
@@ -9,6 +10,9 @@ import ThreeTabs from "./ThreeTabs";
 import firebaseConfig from './firebase';
 import { initializeApp, getApp } from "firebase/app";
 import { getFirestore, collection, addDoc, Timestamp } from "firebase/firestore";
+
+import LoginButton from "./components/LoginButton";
+import LogoutButton from "./components/LogoutButton";
 
 
 
@@ -106,9 +110,6 @@ function App() {
 
   return (
     <>
-
-    
-
         <Container fluid className="vh-100 bg-secondary">
         <Row className="bg-primary text-light py-5">
           <Col></Col>

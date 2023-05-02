@@ -15,7 +15,6 @@ import LoginButton from "./components/LoginButton";
 import LogoutButton from "./components/LogoutButton";
 
 
-
 let firebaseApp;
 
 try {
@@ -94,13 +93,6 @@ function App() {
       console.error("Error adding document: ", error);
     }
   };
-  
-  
-
-  
-  
-  
-  
 
   const deleteTransaction = (index) => {
     const newTransactions = [...transactions];
@@ -110,6 +102,8 @@ function App() {
 
   return (
     <>
+      <LoginButton />
+      <LogoutButton />
         <Container fluid className="vh-100 bg-secondary">
         <Row className="bg-primary text-light py-5">
           <Col></Col>
@@ -164,14 +158,13 @@ function App() {
       </Form>
               </Col>
               <Col>
-                <input
-                placeholder="How much did it cost?"
-                type="text"
-                name="amount"
-                value={amount}
-                onChange={handleChange}
-              />
-            </Col>
+  <input
+    placeholder="How much did it cost?"
+    type="text"
+    name="amount"
+  />
+</Col>
+
           </Row>
           <Row className="mt-4">
             <Col>

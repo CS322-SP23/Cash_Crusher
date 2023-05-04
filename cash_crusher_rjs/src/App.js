@@ -1,5 +1,6 @@
 
 import React, { useState } from "react";
+import Main from './components/Main'
 import {BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { Container, Row, Col, Button, Table, Form } from "react-bootstrap";
 import DatePicker from "react-datepicker";
@@ -13,6 +14,7 @@ import { getFirestore, collection, addDoc, Timestamp } from "firebase/firestore"
 
 import LoginButton from "./components/LoginButton";
 import LogoutButton from "./components/LogoutButton";
+
 
 
 let firebaseApp;
@@ -102,6 +104,9 @@ function App() {
 
   return (
     <>
+    <div>
+      <Main />
+    </div>
       <LoginButton />
       <LogoutButton />
         <Container fluid className="vh-100 bg-secondary">

@@ -4,6 +4,11 @@ import { Icon } from '@iconify/react';
 import { format, addMonths, subMonths, isSameMonth, isSameDay } from 'date-fns';
 import { startOfMonth, endOfMonth, startOfWeek, endOfWeek } from 'date-fns';
 import { addDays, parse } from 'date-fns';
+import { BrowserRouter, Route, Link } from 'react-router-dom';
+import {useNavigate} from 'react-router-dom';
+import Daily from "./Daily";
+
+
 import { initializeApp, getApp } from "firebase/app";
 import firebaseConfig from '../firebase';
 import { getFirestore, collection, getDocs } from "firebase/firestore";
@@ -108,9 +113,19 @@ const Calendar = () => {
   const nextMonth = () => {
     setCurrentMonth(addMonths(currentMonth, 1));
   };
+  /*
   const onDateClick = (day) => {
-    setSelectedDate(day);
+    <Route exact path="/daily" component={Daily} />
   };
+  */
+
+  const navigate = useNavigate();
+
+  const onDateClick = (day) => {
+    // Now you can navigate programmatically to other pages using navigate
+    navigate('/Daily');
+  };
+
   return (
     <div className="calendar">
       <RenderHeader
@@ -124,6 +139,9 @@ const Calendar = () => {
         selectedDate={selectedDate}
         onDateClick={onDateClick}
       />
+      <div>
+      <button onClick={onDateClick}>Navigate to Home</button>
+    </div>
     </div>
   );
 

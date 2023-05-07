@@ -1,6 +1,6 @@
 
 import React from 'react';
-import ReactDOM from 'react-dom/client';
+import ReactDOM from 'react-dom';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { Container } from 'react-bootstrap';
 
@@ -23,23 +23,22 @@ const clientId = process.env.REACT_APP_AUTH0_CLIENT_ID;
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
 root.render(
-<Auth0Provider
+  <Auth0Provider
     domain={domain}
     clientId={clientId}
-    redirectUri={window.location.origin}>
-    <App />
- </Auth0Provider>
-
-  <Router>
+    redirectUri={window.location.origin}
+  >
     <ThreeTabs />
-    <Container fluid className="vh-100 bg-secondary">
-      <Routes>
-        <Route exact path="/" element={<App />} />
-        <Route exact path="/calendar" component={Calendar} />
-        <Route exact path="/summary" element={<Summary/>} />
-      </Routes>
-    </Container>
-  </Router>,
+    <Router>
+      <Container fluid className="vh-100 bg-secondary">
+        <Routes>
+          <Route exact path="/" element={<App />} />
+          <Route exact path="/calendar" element={<Calendar />} />
+          <Route exact path="/summary" element={<Summary />} />
+        </Routes>
+      </Container>
+    </Router>
+  </Auth0Provider>,
   document.getElementById('root')
 );
 

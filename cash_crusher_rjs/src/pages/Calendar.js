@@ -1,24 +1,20 @@
-//import React, { Component } from "react";
 import { useState } from 'react';
 import { Icon } from '@iconify/react';
 import { format, addMonths, subMonths, isSameMonth, isSameDay } from 'date-fns';
 import { startOfMonth, endOfMonth, startOfWeek, endOfWeek } from 'date-fns';
-import { addDays, parse } from 'date-fns';
-import { initializeApp, getApp } from "firebase/app";
-import firebaseConfig from '../firebase';
-import { getFirestore, collection, getDocs } from "firebase/firestore";
-import "firebase/auth";
-
-let firebaseApp;
+import { addDays } from 'date-fns';
+import { useNavigate } from 'react-router-dom';
+import Modal from 'react-bootstrap/Modal';
+import ModalComponent from './ModalComponent';
+import { getFirestore, collection, getDocs } from 'firebase/firestore';
+import Button from 'react-bootstrap/Button';
 
 const RenderHeader = ({ currentMonth, prevMonth, nextMonth }) => {
   return (
     <div className="header row">
       <div className="col col-start">
         <span className="text">
-          <span className="text month">
-            {format(currentMonth, 'M')}Month
-          </span>
+          <span className="text month">{format(currentMonth, 'M')}Month</span>
           {format(currentMonth, 'yyyy')}
         </span>
       </div>
@@ -31,18 +27,17 @@ const RenderHeader = ({ currentMonth, prevMonth, nextMonth }) => {
 };
 
 const RenderDays = () => {
-  const days = [];
-  const date = ['Sun', 'Mon', 'Tue', 'Wed', 'Thrs', 'Fri', 'Sat'];
+  const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thrs', 'Fri', 'Sat'];
 
-  for (let i = 0; i < 7; i++) {
-    days.push(
-      <div className="col" key={i}>
-        {date[i]}
-      </div>,
-    );
-  }
-
-  return <div className="days row">{days}</div>;
+  return (
+    <div className="days row">
+      {days.map((day, index) => (
+        <div className="col" key={index}>
+          {day}
+        </div>
+      ))}
+    </div>
+  );
 };
 
 const RenderCells = ({ currentMonth, selectedDate, onDateClick }) => {
@@ -62,90 +57,75 @@ const RenderCells = ({ currentMonth, selectedDate, onDateClick }) => {
       const cloneDay = day;
       days.push(
         <div
-          className={`col cell ${!isSameMonth(day, monthStart)
-              ? 'disabled'
-              : isSameDay(day, selectedDate)
-                ? 'selected'
-                : format(currentMonth, 'M') !== format(day, 'M')
-                  ? 'not-valie'
-                  : 'valid'
-            }`}
+          className={`col cell ${
+            !isSameMonth(day, monthStart) ? 'disabled' : isSameDay(day, selectedDate) ? 'selected' : ''
+          }`}
           key={day}
-          onClick={() => onDateClick(parse(cloneDay, 'yyyy-MM-dd', new Date()))}
+          onClick={() => onDateClick(cloneDay)}
         >
-          <span
-            className={
-              format(currentMonth, 'M') !== format(day, 'M')
-                ? 'text not-valid'
-                : ''
-            }
-          >
-            {formattedDate}
-          </span>
-        </div>,
+          <span className="number">{formattedDate}</span>
+        </div>
       );
-
       day = addDays(day, 1);
     }
     rows.push(
-      <div className="row" key={day.getTime()}>
+      <div className="row" key={day}>
         {days}
-      </div>,
-
+      </div>
     );
     days = [];
   }
+
   return <div className="body">{rows}</div>;
 };
 
 const Calendar = () => {
   const [currentMonth, setCurrentMonth] = useState(new Date());
-  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [selectedDate, setSelectedDate] = useState(null);
+  const [modalData, setModalData] = useState(null);
+  const [showModal, setShowModal] = useState(false);
+  const navigate = useNavigate();
+  const db = getFirestore();
 
   const prevMonth = () => {
     setCurrentMonth(subMonths(currentMonth, 1));
   };
+
   const nextMonth = () => {
     setCurrentMonth(addMonths(currentMonth, 1));
   };
-  const onDateClick = (day) => {
+
+  const onDateClick = async (day) => {
     setSelectedDate(day);
-  };
-  return (
-    <div className="calendar">
-      <RenderHeader
-        currentMonth={currentMonth}
-        prevMonth={prevMonth}
-        nextMonth={nextMonth}
-      />
-      <RenderDays />
-      <RenderCells
-        currentMonth={currentMonth}
-        selectedDate={selectedDate}
-        onDateClick={onDateClick}
-      />
-    </div>
-  );
+    setShowModal(true);
 
-}
-export default Calendar;
-
-/*
-class Calendar extends React.Component{
-    constructor(props) {
-      super();
-  
-      this.state = {
-        tab: 0,
-      };
-    }
-
-    render(){
-        return(
-            <div>Calendar Page</div>
-        )
-    }
+    const docRef = collection(db, 'events');
+    const querySnapshot = await getDocs(docRef);
   }
-  
-  export default Calendar;
-  */
+    
+  const closeModal = () => {
+    setShowModal(false);
+    };
+            
+const handleEventClick = (event) => {
+     setModalData(event);
+     setShowModal(true);
+     };
+            
+const handleAddEventClick = () => {
+    navigate('/add-event');
+    };
+            
+    return (
+        <div className="calendar">
+            <RenderHeader currentMonth={currentMonth} prevMonth={prevMonth} nextMonth={nextMonth} />
+            <RenderDays />
+            <RenderCells currentMonth={currentMonth} selectedDate={selectedDate} onDateClick={onDateClick} />
+            {showModal && <ModalComponent modalData={modalData} closeModal={closeModal} />}
+            {showModal && <ModalComponent show={showModal} handleClose={closeModal} selectedDate={selectedDate} />}
+            <div className="add-event" onClick={handleAddEventClick}>
+                <Icon icon="bi:plus-circle" />
+            </div>
+        </div>
+    );
+    }; export default Calendar;

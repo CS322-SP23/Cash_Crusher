@@ -1,6 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import Summary from './pages/Summary';
+import LoginButton from "./components/LoginButton";
+import LogoutButton from "./components/LogoutButton";
 
 function ThreeTabs() {
   return (
@@ -22,6 +24,10 @@ function ThreeTabs() {
               <Link className="nav-link" to="/Summary">Summary</Link>
             </li>
           </ul>
+        </div>
+        <div className="ml-auto">
+          <LoginButton />
+          <LogoutButton/>
         </div>
       </div>
     </nav>

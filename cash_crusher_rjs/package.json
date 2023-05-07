@@ -3,10 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-
     "@auth0/auth0-react": "^2.0.2",
     "@syncfusion/ej2-react-calendars": "^21.1.38",
-
     "@syncfusion/ej2-react-grids": "^21.1.39",
     "@syncfusion/ej2-react-navigations": "^21.1.39",
     "@syncfusion/ej2-react-popups": "^21.1.37",
@@ -14,17 +12,17 @@
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
     "bootstrap": "^5.2.3",
+    "date-fns": "^2.30.0",
     "firebase": "^9.20.0",
-
     "mdbreact": "^5.2.0",
-
     "react": "^18.2.0",
-    "react-bootstrap": "^2.7.2",
+    "react-bootstrap": "^2.7.4",
+    "react-calendar": "^4.2.1",
     "react-chartjs-2": "^5.2.0",
     "react-datepicker": "^4.11.0",
     "react-dom": "^18.2.0",
     "react-icons": "^4.8.0",
-    "react-router-dom": "^6.10.0",
+    "react-router-dom": "^6.11.0",
     "react-scripts": "5.0.1",
     "uuid": "^9.0.0",
     "web-vitals": "^2.1.4"
@@ -54,6 +52,7 @@
     ]
   },
   "devDependencies": {
+    "@iconify/react": "^4.1.0",
     "css-loader": "^6.7.3",
     "style-loader": "^3.3.2"
   }

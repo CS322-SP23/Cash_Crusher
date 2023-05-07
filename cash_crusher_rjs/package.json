@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@auth0/auth0-react": "^2.0.2",
     "@syncfusion/ej2-react-calendars": "^21.1.38",
     "@syncfusion/ej2-react-grids": "^21.1.39",
     "@syncfusion/ej2-react-navigations": "^21.1.39",

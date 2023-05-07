@@ -5,11 +5,16 @@ import { Container, Row, Col, Button, Table, Form } from "react-bootstrap";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import Summary from "./pages/Summary";
-import Calendar from "./pages/Calendar";
+//import Calendar from "./pages/Calendar";
 import ThreeTabs from "./ThreeTabs";
 import firebaseConfig from './firebase';
 import { initializeApp, getApp } from "firebase/app";
 import { getFirestore, collection, addDoc, Timestamp } from "firebase/firestore";
+import { onSnapshot } from "firebase/firestore";
+import { useEffect } from "react";
+import Calendar from "react-calendar";
+import "react-calendar/dist/Calendar.css";
+
 
 import LoginButton from "./components/LoginButton";
 import LogoutButton from "./components/LogoutButton";
@@ -26,7 +31,16 @@ try {
 
 const db = getFirestore(firebaseApp);
 
+function MyCalendar({ onDateChange }) {
+  const [value, setValue] = useState(new Date());
 
+  const onChange = (date) => {
+    setValue(date);
+    onDateChange(date);
+  };
+
+  return <Calendar onChange={onChange} value={value} />;
+}
 
 function App() {
   const [startDate, setStartDate] = useState(new Date());
@@ -36,6 +50,7 @@ function App() {
   const [category, setCategory] = useState("");
   const [amount, setAmount] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
+  const [selectedDate, setSelectedDate] = useState(null);
   
 
   const categories = [
@@ -66,7 +81,6 @@ function App() {
         break;
     }
   };
-  
 
   const addTransaction = async () => {
     console.log("Add transaction button clicked!");
@@ -94,13 +108,6 @@ function App() {
       console.error("Error adding document: ", error);
     }
   };
-  
-  
-
-  
-  
-  
-  
 
   const deleteTransaction = (index) => {
     const newTransactions = [...transactions];
@@ -108,11 +115,37 @@ function App() {
     setTransactions(newTransactions);
   };
 
+  const fetchTransactions = () => {
+    if (!selectedDate) {
+      return;
+    }
+
+    const start = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate(), 0, 0, 0);
+    const end = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate(), 23, 59, 59);
+
+    const query = collection(db, "Transactions").where("date", ">=", start).where("date", "<=", end);
+
+    return onSnapshot(query, (snapshot) => {
+      const data = [];
+      snapshot.forEach((doc) => {
+        data.push({ ...doc.data(), id: doc.id });
+      });
+      setTransactions(data);
+    });
+  };
+
+  const handleDateChange = (date) => {
+    setSelectedDate(date);
+  };
+
+  useEffect(() => {
+    fetchTransactions();
+  }, [selectedDate]);
+
   return (
     <>
     <LoginButton/>
     <LogoutButton/>
-
     
 
         <Container fluid className="vh-100 bg-secondary">

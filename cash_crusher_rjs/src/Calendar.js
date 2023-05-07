@@ -12,7 +12,7 @@ class Calendar extends React.Component{
 
     render(){
         return(
-            <div>Calendar Page</div>
+          <div>This is a Calendar page</div>
         )
     }
   }

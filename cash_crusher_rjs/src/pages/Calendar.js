@@ -8,6 +8,9 @@ import Modal from 'react-bootstrap/Modal';
 import ModalComponent from './ModalComponent';
 import { getFirestore, collection, getDocs } from 'firebase/firestore';
 import Button from 'react-bootstrap/Button';
+import { Timestamp } from 'firebase/firestore';
+import { where } from 'firebase/firestore';
+
 
 const RenderHeader = ({ currentMonth, prevMonth, nextMonth }) => {
   return (
@@ -99,11 +102,24 @@ const Calendar = () => {
     setSelectedDate(day);
     setShowModal(true);
 
-    const docRef = collection(db, 'events');
-    const querySnapshot = await getDocs(docRef);
-  }
+  // Convert selected date to Firebase timestamp format
+  const selectedTimestamp = Timestamp.fromDate(day);
+
+  // Construct Firestore query to filter transactions by date
+  const querySnapshot = await getDocs(
+    collection(db, 'transactions').where('date', '==', selectedTimestamp)
+  );
+
+  // Map query snapshot to an array of transaction objects
+  const transactions = querySnapshot.docs.map((doc) => {
+    return { id: doc.id, ...doc.data() };
+  });
+
+  // Set the modal data to the transactions array
+  setModalData(transactions);
+};
     
-  const closeModal = () => {
+const closeModal = () => {
     setShowModal(false);
     };
             
@@ -121,8 +137,8 @@ const handleAddEventClick = () => {
             <RenderHeader currentMonth={currentMonth} prevMonth={prevMonth} nextMonth={nextMonth} />
             <RenderDays />
             <RenderCells currentMonth={currentMonth} selectedDate={selectedDate} onDateClick={onDateClick} />
-            {showModal && <ModalComponent modalData={modalData} closeModal={closeModal} />}
             {showModal && <ModalComponent show={showModal} handleClose={closeModal} selectedDate={selectedDate} />}
+            {showModal && (<ModalComponent modalData={modalData} closeModal={closeModal} />)}
             <div className="add-event" onClick={handleAddEventClick}>
                 <Icon icon="bi:plus-circle" />
             </div>

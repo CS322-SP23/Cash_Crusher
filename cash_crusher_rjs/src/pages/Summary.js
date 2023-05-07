@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Table, Col, Row, Form, Button } from "react-bootstrap";
+import { Table, Col, Row, Form, Button, Container } from "react-bootstrap";
 import PieChart from "../PieChart";
 import { initializeApp, getApp } from "firebase/app";
 import firebaseConfig from '../firebase';
@@ -179,7 +179,8 @@ const Summary = ({ transactions, expenses }) => {
   
 
   return (
-    <div className="container my-5">
+    <Container fluid className="vh-100 bg-secondary">
+    <div className="bg-primary p-5">
       <Row>
         <Col md={6}>
           <div style={{ height: "500px" }}>
@@ -249,7 +250,9 @@ const Summary = ({ transactions, expenses }) => {
         </Col>
       </Row>
     </div>
+    </Container>
   );
 };
 
 export default Summary;
+

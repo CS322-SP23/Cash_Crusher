@@ -1,6 +1,6 @@
 
 import React, { useState } from "react";
-import {BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes, Switch } from "react-router-dom";
 import { Container, Row, Col, Button, Table, Form } from "react-bootstrap";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -12,8 +12,9 @@ import { initializeApp, getApp } from "firebase/app";
 import { getFirestore, collection, addDoc, Timestamp } from "firebase/firestore";
 import { onSnapshot } from "firebase/firestore";
 import { useEffect } from "react";
-import Calendar from "react-calendar";
+//import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
+import Calendar from './Calendar';
 
 
 import LoginButton from "./components/LoginButton";

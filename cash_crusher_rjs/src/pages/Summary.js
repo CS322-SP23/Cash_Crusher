@@ -179,9 +179,11 @@ const Summary = ({ transactions, expenses }) => {
   
 
   return (
-    <Container fluid className="vh-100 bg-secondary">
-    <div className="bg-primary p-5">
-      <Row>
+    <>
+    <Container fluid className="vh-100 bg-light text-light py-5">
+
+    
+    <Row>
         <Col md={6}>
           <div style={{ height: "500px" }}>
           <PieChart data={selectedData} />
@@ -249,8 +251,9 @@ const Summary = ({ transactions, expenses }) => {
 
         </Col>
       </Row>
-    </div>
+   
     </Container>
+    </>
   );
 };
 

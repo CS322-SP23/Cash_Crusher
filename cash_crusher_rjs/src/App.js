@@ -103,9 +103,9 @@ function App() {
 
   return (
     <>
-        <Container fluid className="vh-100 bg-secondary">
+        <Container fluid className="vh-100 bg-light py-5">
           
-        <Row className="bg-primary text-light py-5">
+        <Row >
           <Col></Col>
         </Row>
         <Row className="h-100">

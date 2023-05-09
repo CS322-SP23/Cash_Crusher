@@ -3,10 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-
     "@auth0/auth0-react": "^2.0.2",
     "@syncfusion/ej2-react-calendars": "^21.1.38",
-
     "@syncfusion/ej2-react-grids": "^21.1.39",
     "@syncfusion/ej2-react-navigations": "^21.1.39",
     "@syncfusion/ej2-react-popups": "^21.1.37",
@@ -14,10 +12,8 @@
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
     "bootstrap": "^5.2.3",
-    "firebase": "^9.20.0",
-
+    "firebase": "^9.21.0",
     "mdbreact": "^5.2.0",
-
     "react": "^18.2.0",
     "react-bootstrap": "^2.7.2",
     "react-chartjs-2": "^5.2.0",

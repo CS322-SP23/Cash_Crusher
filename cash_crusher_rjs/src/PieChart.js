@@ -19,7 +19,7 @@ const PieChart = ({ data, selectedCategories, summaryData }) => {
       {
         label: "Budget Categories Spent",
         data: filteredData.map((item) => item.amount),
-        backgroundColor: ["blue", "green", "yellow", "pink", "orange"],
+        backgroundColor: ["blue", "blueviolet", "cornflowerBlue", "cadetblue", "dodgerblue","navy","royalblue"],
       },
     ],
   };

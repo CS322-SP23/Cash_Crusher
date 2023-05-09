@@ -47,9 +47,23 @@ const Summary = ({ transactions, expenses }) => {
     } else {
       // Add the category to the array if it is not already selected
       selectedCategoriesCopy.push(category);
+      const categoryExists = data.some(
+        (item) => item.category === category
+      );
+      if (!categoryExists) {
+        const newCategory = {
+          id: data.length + 1,
+          percentage: 0,
+          category: category,
+          amount: 0,
+        };
+        setData([...data, newCategory]);
+      }
     }
     setSelectedCategories(selectedCategoriesCopy);
   };
+  
+  
 
   const handleAddCategory = () => {
     // Check if the selected category already exists in the data array

@@ -1,6 +1,5 @@
 
 import React, { useState } from "react";
-import Main from './components/Main'
 import {BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { Container, Row, Col, Button, Table, Form } from "react-bootstrap";
 import DatePicker from "react-datepicker";
@@ -104,9 +103,6 @@ function App() {
 
   return (
     <>
-    <div>
-      <Main />
-    </div>
       <LoginButton />
       <LogoutButton />
         <Container fluid className="vh-100 bg-secondary">

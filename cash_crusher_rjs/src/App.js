@@ -5,11 +5,13 @@ import { Container, Row, Col, Button, Table, Form } from "react-bootstrap";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import Summary from "./pages/Summary";
-import Calendar from "./pages/Calendar";
+//import Calendar from "./pages/Calendar";
 import ThreeTabs from "./ThreeTabs";
 import firebaseConfig from './firebase';
 import { initializeApp, getApp } from "firebase/app";
-import { getFirestore, collection, addDoc, Timestamp } from "firebase/firestore";
+import { getFirestore, collection, addDoc, Timestamp, doc, deleteDoc } from "firebase/firestore";
+import { onSnapshot } from "firebase/firestore";
+import { useEffect } from "react";
 
 import LoginButton from "./components/LoginButton";
 import LogoutButton from "./components/LogoutButton";
@@ -26,7 +28,16 @@ try {
 
 const db = getFirestore(firebaseApp);
 
+function MyCalendar({ onDateChange }) {
+  const [value, setValue] = useState(new Date());
 
+  const onChange = (date) => {
+    setValue(date);
+    onDateChange(date);
+  };
+
+
+}
 
 function App() {
   const [startDate, setStartDate] = useState(new Date());
@@ -36,16 +47,10 @@ function App() {
   const [category, setCategory] = useState("");
   const [amount, setAmount] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
+  const [selectedDate, setSelectedDate] = useState(null);
   
 
-  const categories = [
-    "Personal",
-    "Savings",
-    "Food",
-    "Travel",
-    "Entertainment",
-    "Utilities",
-  ];
+
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -66,7 +71,6 @@ function App() {
         break;
     }
   };
-  
 
   const addTransaction = async () => {
     console.log("Add transaction button clicked!");
@@ -95,17 +99,52 @@ function App() {
     }
   };
 
-  const deleteTransaction = (index) => {
-    const newTransactions = [...transactions];
-    newTransactions.splice(index, 1);
-    setTransactions(newTransactions);
+  const deleteTransaction = async (index) => {
+    const transactionToDelete = transactions[index];
+    const transactionRef = doc(db, "Transactions", transactionToDelete.id);
+    try {
+      await deleteDoc(transactionRef);
+      const newTransactions = transactions.filter((transaction) => transaction.id !== transactionToDelete.id);
+      setTransactions(newTransactions);
+    } catch (error) {
+      console.error("Error deleting document: ", error);
+    }
   };
+  
+
+
+  const fetchTransactions = () => {
+    if (!selectedDate) {
+      return;
+    }
+
+    const start = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate(), 0, 0, 0);
+    const end = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate(), 23, 59, 59);
+
+    const query = collection(db, "Transactions").where("date", ">=", start).where("date", "<=", end);
+
+    return onSnapshot(query, (snapshot) => {
+      const data = [];
+      snapshot.forEach((doc) => {
+        data.push({ ...doc.data(), id: doc.id });
+      });
+      setTransactions(data);
+    });
+  };
+
+  const handleDateChange = (date) => {
+    setSelectedDate(date);
+  };
+
+  useEffect(() => {
+    fetchTransactions();
+  }, [selectedDate]);
 
   return (
     <>
-        <Container fluid className="vh-100 bg-light py-5">
-          
-        <Row >
+
+        <Container fluid className="vh-100 bg-secondary">
+        <Row className="bg-primary text-light py-5">
           <Col></Col>
         </Row>
         <Row className="h-100">
@@ -152,19 +191,22 @@ function App() {
               <option value="Food">Food</option>
               <option value="Transportation">Transportation</option>
               <option value="Entertainment">Entertainment</option>
-              <option value="Other">Other</option>
+              <option value="Utilities">Utilities</option>
+              <option value="Savings">Savings</option>
+              <option value="Personal Spending">Personal Spending</option>
             </Form.Control>
         </Form.Group>
       </Form>
               </Col>
               <Col>
-  <input
-    placeholder="How much did it cost?"
-    type="text"
-    name="amount"
-  />
-</Col>
-
+                <input
+                placeholder="How much did it cost?"
+                type="number"
+                name="amount"
+                value={amount}
+                onChange={handleChange}
+              />
+            </Col>
           </Row>
           <Row className="mt-4">
             <Col>
@@ -183,22 +225,20 @@ function App() {
               </tr>
             </thead>
             <tbody>
-              {transactions.map((transaction) => (
-                <tr key={transaction.id}>
-                  <td>{transaction.date.toDate().toLocaleDateString()}</td>
-                  <td>{transaction.description}</td>
-                  <td>{transaction.category}</td>
-                  <td className="text-danger">{transaction.amount}</td>
-                  <td>
-                    <Button
-                      variant="danger"
-                      onClick={() => deleteTransaction(transaction.id)}
-                    >
-                      Delete
-                    </Button>
-                  </td>
-                </tr>
-              ))}
+            {transactions.map((transaction, index) => (
+              <tr key={transaction.id}>
+                <td>{transaction.date.toDate().toLocaleDateString()}</td>
+                <td>{transaction.description}</td>
+                <td>{transaction.category}</td>
+                <td>{transaction.amount}</td>
+                <td>
+                  <Button variant="danger" onClick={() => deleteTransaction(index)}>
+                    Delete
+                  </Button>
+                </td>
+              </tr>
+            ))}
+
             </tbody>
           </Table>
         </Col>

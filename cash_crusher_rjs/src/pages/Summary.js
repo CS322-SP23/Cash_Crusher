@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Table, Col, Row, Form, Button } from "react-bootstrap";
+import { Table, Col, Row, Form, Button, Container } from "react-bootstrap";
 import PieChart from "../PieChart";
 import { initializeApp, getApp } from "firebase/app";
 import firebaseConfig from '../firebase';
@@ -22,7 +22,9 @@ const Summary = ({ transactions, expenses }) => {
     { id: 1, category: "Food", amount: 0, percentage: 0, color: "green" },
     { id: 2, category: "Transportation", amount: 0, percentage: 0, color: "green" },
     { id: 3, category: "Entertainment", amount: 0, percentage: 0, color: "green" },
-    { id: 4, category: "Other", amount: 0, percentage: 0, color: "green" },
+    { id: 4, category: "Utilities", amount: 0, percentage: 0, color: "green" },
+    { id: 5, category: "Savings", amount: 0, percentage: 0, color: "green" },
+    { id: 6, category: "Personal Spending", amount: 0, percentage: 0, color: "green" },
   ]);
   
   
@@ -47,9 +49,23 @@ const Summary = ({ transactions, expenses }) => {
     } else {
       // Add the category to the array if it is not already selected
       selectedCategoriesCopy.push(category);
+      const categoryExists = data.some(
+        (item) => item.category === category
+      );
+      if (!categoryExists) {
+        const newCategory = {
+          id: data.length + 1,
+          percentage: 0,
+          category: category,
+          amount: 0,
+        };
+        setData([...data, newCategory]);
+      }
     }
     setSelectedCategories(selectedCategoriesCopy);
   };
+  
+  
 
   const handleAddCategory = () => {
     // Check if the selected category already exists in the data array
@@ -88,7 +104,9 @@ const Summary = ({ transactions, expenses }) => {
     { id: 1, category: "Food", amount: 0, percentage: 0 },
     { id: 2, category: "Transportation", amount: 0, percentage: 0 },
     { id: 3, category: "Entertainment", amount: 0, percentage: 0 },
-    { id: 4, category: "Other", amount: 0, percentage: 0 },
+    { id: 4, category: "Utilities", amount: 0, percentage: 0 },
+    { id: 5, category: "Savings", amount: 0, percentage: 0 },
+    { id: 6, category: "Personal Spending", amount: 0, percentage: 0 },
   ]);
 }, []);
 
@@ -179,8 +197,11 @@ const Summary = ({ transactions, expenses }) => {
   
 
   return (
-    <div className="container my-5">
-      <Row>
+    <>
+    <Container fluid className="vh-100 bg-light text-light py-5">
+
+    
+    <Row>
         <Col md={6}>
           <div style={{ height: "500px" }}>
           <PieChart data={selectedData} />
@@ -233,7 +254,9 @@ const Summary = ({ transactions, expenses }) => {
               <option value="Food">Food</option>
               <option value="Transportation">Transportation</option>
               <option value="Entertainment">Entertainment</option>
-              <option value="Other">Other</option>
+              <option value="Utilities">Utilities</option>
+              <option value="Savings">Savings</option>
+              <option value="Personal Spending">Personal Spending</option>
             </Form.Control>
         </Form.Group>
         <Button
@@ -248,8 +271,11 @@ const Summary = ({ transactions, expenses }) => {
 
         </Col>
       </Row>
-    </div>
+   
+    </Container>
+    </>
   );
 };
 
 export default Summary;
+

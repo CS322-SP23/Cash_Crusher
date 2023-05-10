@@ -1,36 +1,37 @@
+import React from 'react';
+import { Link } from 'react-router-dom';
 import Summary from './pages/Summary';
-import React, { useState } from "react";
-import Daily from './pages/Daily';
-import Calendar from './pages/Calendar';
-import { Navbar, Nav } from 'react-bootstrap';
-import { Link, Routes, Route, BrowserRouter as Router } from 'react-router-dom';
+import LoginButton from "./components/LoginButton";
+import LogoutButton from "./components/LogoutButton";
 
 function ThreeTabs() {
-  const [tab, setTab] = useState(0);
-
-  const changeTab = (tabIndex) => {
-    setTab(tabIndex);
-  };
-
   return (
-    <Router>
-      <div>
-        <Navbar bg="primary" variant="dark">
-          <Navbar.Brand>Transactions</Navbar.Brand>
-          <Nav className="mr-auto">
-            <Nav.Link as={Link} to="/" className={`${tab === 0 ? 'active' : ''}`} onClick={() => changeTab(0)}>Daily</Nav.Link>
-            <Nav.Link as={Link} to="/calendar" className={`${tab === 1 ? 'active' : ''}`} onClick={() => changeTab(1)}>Calendar</Nav.Link>
-            <Nav.Link as={Link} to="/summary" className={`${tab === 2 ? 'active' : ''}`} onClick={() => changeTab(2)}>Summary</Nav.Link>
-          </Nav>
-        </Navbar>
-        <Routes>
-          <Route path="/" element={<Daily />} />
-          <Route path="/calendar" element={<Calendar />} />
-          <Route path="/summary" element={<Summary />} />
-        </Routes>
+    <nav className="navbar navbar-expand-lg navbar-dark bg-primary">
+      <div className="container-fluid">
+        <Link className="navbar-brand" to="/">CASH CRUSHER</Link>
+        <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+          <span className="navbar-toggler-icon"></span>
+        </button>
+        <div className="collapse navbar-collapse" id="navbarNav">
+          <ul className="navbar-nav">
+            <li className="nav-item">
+              <Link className="nav-link" to="/">Home</Link>
+            </li>
+            <li className="nav-item">
+              <Link className="nav-link" to="/calendar">Calendar</Link>
+            </li>
+            <li className="nav-item">
+              <Link className="nav-link" to="/Summary">Summary</Link>
+            </li>
+          </ul>
+        </div>
+        <div className="ml-auto">
+          <LoginButton />
+          <LogoutButton/>
+        </div>
       </div>
-    </Router>
-  )
+    </nav>
+  );
 }
 
 export default ThreeTabs;

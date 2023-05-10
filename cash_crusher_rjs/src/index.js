@@ -28,16 +28,17 @@ root.render(
     clientId={clientId}
     redirectUri={window.location.origin}
   >
-    <ThreeTabs />
     <Router>
+      <ThreeTabs />
       <Container fluid className="vh-100 bg-secondary">
         <Routes>
           <Route exact path="/" element={<App />} />
-          <Route exact path="/calendar" element={<Calendar />} />
-          <Route exact path="/summary" element={<Summary />} />
+          <Route exact path="/calendar" component={Calendar} />
+          <Route exact path="/summary" element={<Summary/>} />
         </Routes>
       </Container>
     </Router>
   </Auth0Provider>,
   document.getElementById('root')
 );
+

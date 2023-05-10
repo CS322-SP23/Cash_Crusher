@@ -5,7 +5,7 @@ import { Container, Row, Col, Button, Table, Form } from "react-bootstrap";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import Summary from "./pages/Summary";
-//import Calendar from "./pages/Calendar";
+//import from "./pages/Calendar";
 import ThreeTabs from "./ThreeTabs";
 import firebaseConfig from './firebase';
 import { initializeApp, getApp } from "firebase/app";
@@ -110,8 +110,6 @@ function App() {
       console.error("Error deleting document: ", error);
     }
   };
-  
-
 
 
   const fetchTransactions = () => {
@@ -143,6 +141,9 @@ function App() {
 
   return (
     <>
+      <LoginButton />
+      <LogoutButton />
+        <Container fluid className="vh-100 bg-secondary">
         <Container fluid className="bg-light py-5">
         <Row className="bg-primary text-light py-5">
           <Col></Col>
@@ -170,6 +171,7 @@ function App() {
                   onChange={handleChange}
                 />
               </Col>
+              
               <Col>
                 <input
                   placeholder="C-Store, Gizmo, Pho Lover "
@@ -202,7 +204,6 @@ function App() {
             </Form>
               </Col>
               <Col>
-
                 <input
                 placeholder="How much did it cost?"
                 type="number"
@@ -211,8 +212,21 @@ function App() {
                 onChange={handleChange}
               />
             </Col>
+
+
+  <input
+    placeholder="How much did it cost?"
+    type="text"
+    name="amount"
+  />
+  </Row>
+</Col>
+          
+          <Row className="mt-4">
+
             </Col>
             <Row className="mt-4">
+
             <Col>
               <Button variant="primary" onClick={addTransaction}>
                 Add Transaction
@@ -246,7 +260,7 @@ function App() {
 
             </tbody>
           </Table>
-        </Col>
+  
         <Col xs={12} md={3} className="bg-light py-5">
           <h3 className="text-center mb-4">Accounts</h3>
           <ul className="list-unstyled">

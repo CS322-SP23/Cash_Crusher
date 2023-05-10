@@ -4,12 +4,9 @@ import { format, addMonths, subMonths, isSameMonth, isSameDay } from 'date-fns';
 import { startOfMonth, endOfMonth, startOfWeek, endOfWeek } from 'date-fns';
 import { addDays } from 'date-fns';
 import { useNavigate } from 'react-router-dom';
-import Modal from 'react-bootstrap/Modal';
 import ModalComponent from './ModalComponent';
 import { getFirestore, collection, getDocs } from 'firebase/firestore';
-import Button from 'react-bootstrap/Button';
 import { Timestamp } from 'firebase/firestore';
-import { where } from 'firebase/firestore';
 
 
 const RenderHeader = ({ currentMonth, prevMonth, nextMonth }) => {

@@ -50,6 +50,7 @@
     ]
   },
   "devDependencies": {
+    "@iconify/react": "^4.1.0",
     "css-loader": "^6.7.3",
     "style-loader": "^3.3.2"
   }

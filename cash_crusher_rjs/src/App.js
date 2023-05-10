@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import {BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { Container, Row, Col, Button, Table, Form } from "react-bootstrap";
@@ -113,7 +112,6 @@ function App() {
   
 
 
-
   const fetchTransactions = () => {
     if (!selectedDate) {
       return;
@@ -143,7 +141,8 @@ function App() {
 
   return (
     <>
-        <Container fluid className="bg-light py-5">
+
+        <Container fluid className="vh-100 bg-secondary">
         <Row className="bg-primary text-light py-5">
           <Col></Col>
         </Row>
@@ -161,7 +160,7 @@ function App() {
                 />
               </Col>
             </Row>
-            <Row className="mt-5"></Row>
+            <Row className="mt-5">
               <Col>
                 <input
                   type="date"
@@ -182,27 +181,23 @@ function App() {
               <Col>
               <Form>
           <Form.Group>
-          <Form.Control
-            as="select"
-            value={category}
-            onChange={(event) => setCategory(event.target.value)}
-            style={{ width: "150px" }} // set the width to 150px
-          >
-          <option value="">Select Budget category...</option>
-          <option value="Food">Food</option>
-          <option value="Transportation">Transportation</option>
-          <option value="Shopping">Shopping</option>
-          <option value="Entertainment">Entertainment</option>
-          <option value="Utilities">Utilities</option>
-          <option value="Savings">Savings</option>
-          <option value="Personal Spending">Personal Spending</option>
-          </Form.Control>
-
-            </Form.Group>
-            </Form>
+            <Form.Control
+              as="select"
+              value={category}
+              onChange={(event) => setCategory(event.target.value)}
+            >
+              <option value="">Select Budget category...</option>
+              <option value="Food">Food</option>
+              <option value="Transportation">Transportation</option>
+              <option value="Entertainment">Entertainment</option>
+              <option value="Utilities">Utilities</option>
+              <option value="Savings">Savings</option>
+              <option value="Personal Spending">Personal Spending</option>
+            </Form.Control>
+        </Form.Group>
+      </Form>
               </Col>
               <Col>
-
                 <input
                 placeholder="How much did it cost?"
                 type="number"
@@ -211,15 +206,14 @@ function App() {
                 onChange={handleChange}
               />
             </Col>
-            </Col>
-            <Row className="mt-4">
+          </Row>
+          <Row className="mt-4">
             <Col>
               <Button variant="primary" onClick={addTransaction}>
                 Add Transaction
               </Button>
             </Col>
           </Row>
-          <Col>
           <Table striped bordered hover>
             <thead>
               <tr>
@@ -268,9 +262,10 @@ function App() {
           </ul>
         </Col>
       </Row>
-    </Container>  
-    </>   
+    </Container>
+    </>
   );
-            }
+}
+
 
 export default App;

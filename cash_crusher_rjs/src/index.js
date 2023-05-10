@@ -32,7 +32,7 @@ root.render(
       <Container fluid className="vh-100 bg-secondary">
         <Routes>
           <Route exact path="/" element={<App />} />
-          <Route exact path="/calendar" component={Calendar} />
+          <Route exact path="/calendar" element={<Calendar />} />
           <Route exact path="/summary" element={<Summary/>} />
         </Routes>
       </Container>

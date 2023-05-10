@@ -98,7 +98,6 @@ function App() {
       console.error("Error adding document: ", error);
     }
   };
- Jamari_5_9_23_update
 
   const deleteTransaction = async (index) => {
     const transactionToDelete = transactions[index];
@@ -111,9 +110,6 @@ function App() {
       console.error("Error deleting document: ", error);
     }
   };
-  
-
- Login-Page
 
 
   const fetchTransactions = () => {
@@ -145,12 +141,8 @@ function App() {
 
   return (
     <>
- Jamari_5_9_23_update
-
-
       <LoginButton />
       <LogoutButton />
- Login-Page
         <Container fluid className="vh-100 bg-secondary">
         <Row className="bg-primary text-light py-5">
           <Col></Col>
@@ -178,6 +170,7 @@ function App() {
                   onChange={handleChange}
                 />
               </Col>
+              
               <Col>
                 <input
                   placeholder="C-Store, Gizmo, Pho Lover "
@@ -207,7 +200,6 @@ function App() {
       </Form>
               </Col>
               <Col>
- Jamari_5_9_23_update
                 <input
                 placeholder="How much did it cost?"
                 type="number"
@@ -222,10 +214,9 @@ function App() {
     type="text"
     name="amount"
   />
+  </Row>
 </Col>
-
- Login-Page
-          </Row>
+          
           <Row className="mt-4">
             <Col>
               <Button variant="primary" onClick={addTransaction}>
@@ -259,7 +250,7 @@ function App() {
 
             </tbody>
           </Table>
-        </Col>
+  
         <Col xs={12} md={3} className="bg-light py-5">
           <h3 className="text-center mb-4">Accounts</h3>
           <ul className="list-unstyled">

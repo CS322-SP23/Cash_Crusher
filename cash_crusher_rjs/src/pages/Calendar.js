@@ -14,7 +14,7 @@ const RenderHeader = ({ currentMonth, prevMonth, nextMonth }) => {
     <div className="header row">
       <div className="col col-start">
         <span className="text">
-          <span className="text month">{format(currentMonth, 'M')}Month</span>
+          <span className="text month">{format(currentMonth, 'M')}/</span>
           {format(currentMonth, 'yyyy')}
         </span>
       </div>

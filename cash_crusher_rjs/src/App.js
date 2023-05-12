@@ -143,7 +143,7 @@ function App() {
     <>
 
         <Container fluid className="vh-100 bg-secondary">
-        <Row className="bg-primary text-light py-5">
+        <Row className="bg-success text-light py-5">
           <Col></Col>
         </Row>
         <Row className="h-100">
@@ -209,7 +209,7 @@ function App() {
           </Row>
           <Row className="mt-4">
             <Col>
-              <Button variant="primary" onClick={addTransaction}>
+              <Button variant="success"  onClick={addTransaction}>
                 Add Transaction
               </Button>
             </Col>
@@ -242,24 +242,7 @@ function App() {
           </Table>
         </Col>
         <Col xs={12} md={3} className="bg-light py-5">
-          <h3 className="text-center mb-4">Accounts</h3>
-          <ul className="list-unstyled">
-            <li className="mb-2">
-              <a href="#" className="text-decoration-none text-dark">
-                Checking
-              </a>
-            </li>
-            <li className="mb-2">
-              <a href="#" className="text-decoration-none text-dark">
-                Savings
-              </a>
-            </li>
-            <li className="mb-2">
-              <a href="#" className="text-decoration-none text-dark">
-                Credit Card
-              </a>
-            </li>
-          </ul>
+          
         </Col>
       </Row>
     </Container>

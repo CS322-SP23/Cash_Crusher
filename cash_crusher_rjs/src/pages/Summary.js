@@ -261,7 +261,7 @@ const Summary = ({ transactions, expenses }) => {
             </Form.Control>
         </Form.Group>
         <Button
-          variant="primary"
+          variant="success"
           type="button"
           onClick={handleAddCategory}
           disabled={!selectedCategory}

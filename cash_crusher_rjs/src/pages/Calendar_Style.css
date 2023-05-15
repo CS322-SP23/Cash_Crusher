@@ -1,0 +1,16 @@
+.calendar {
+    background-color: #f7f7f7;
+    height: 1000px; /* set the height to 600 pixels */
+    width: 1200px; /* set the width to 800 pixels */
+    /*display: flex;*/
+    justify-content: center;
+    margin-left: 140px;
+    font-size: 26px;
+  }
+  
+  .header .text.month {
+    font-size: 5.5rem;
+  }
+  .header .text.year {
+    font-size: 2.5rem;
+  }

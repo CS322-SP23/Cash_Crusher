@@ -5,7 +5,6 @@ import { format } from 'date-fns';
 import { getFirestore, collection, query, where, getDocs } from
 'firebase/firestore';
 import { Timestamp } from 'firebase/firestore';
-import { Icon } from '@iconify/react';
 const ModalComponent = ({ handleClose, show, selectedDate }) => {
 const [modalData, setModalData] = useState(null);
 useEffect(() => {
@@ -36,12 +35,12 @@ return (
 </Modal.Title>
 </Modal.Header>
 <Modal.Body>
-<Icon icon="bi:plus-circle" />
 {modalData && modalData.length > 0 ? (
-<table>
+<table style={{ borderCollapse: 'separate', borderSpacing: '14px' }}>
 <thead>
 <tr>
 <th>Date</th>
+<th>Category</th>
 <th>Description</th>
 <th>Amount</th>
 </tr>
@@ -51,6 +50,7 @@ return (
 <tr key={transaction.id}>
 <td>{format(transaction.date.toDate(),
 'yyyy-MM-dd')}</td>
+<td>{transaction.category}</td>
 <td>{transaction.description}</td>
 <td>{transaction.amount}</td>
 </tr>

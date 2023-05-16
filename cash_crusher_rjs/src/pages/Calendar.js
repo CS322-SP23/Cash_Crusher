@@ -107,6 +107,7 @@ setModalData(transactions);
 };
 const closeModal = () => {
 setShowModal(false);
+setSelectedDate(null);
 };
 const handleEventClick = (event) => {
 setModalData(event);
@@ -125,7 +126,6 @@ selectedDate={selectedDate} onDateClick={onDateClick} />
 handleClose={closeModal} selectedDate={selectedDate} />}
 {showModal && (<ModalComponent modalData={modalData}
 closeModal={closeModal} />)}
-<Icon icon="bi:plus-circle" />
 </div>
 </Container>
 );

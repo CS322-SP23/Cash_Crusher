@@ -1,18 +1,22 @@
 .calendar {
-    background-color: #f7f7f7;
+    background-color: #e6f4e6;
+  /*background-color: #f7f7f7;*/
     height: 1000px; /* set the height to 600 pixels */
     width: 1200px; /* set the width to 800 pixels */
     /*display: flex;*/
     justify-content: center;
-    margin-left: 140px;
-    font-size: 26px;
+    margin-left: 130px;
+    font-size: 28px;
   }
   
   .header .text.month {
-    font-size: 5.5rem;
+    font-size: 6.5rem;
   }
   .header .text.year {
     font-size: 2.5rem;
+  }
+  .header .text.col {
+    margin-bottom: 20px;
   }
 
   .header {
@@ -21,6 +25,25 @@
     align-items: center;
     margin-bottom: 10px;
   }
+
+  .cell.selected {
+    background-color: #4caf50; /* a dark green color */
+    color: #fff; /* set the text color to white */
+  }
+
+  .cell.disabled {
+    color: #999; /* a gray color */
+  }
+
+  .header, .days {
+    background-color: #4caf50; /* a dark green color */
+    color: #fff; /* set the text color to white */
+  }
+
+  .body .row {
+    margin-bottom: 26px;
+  }
+  
 /*
   .row {
     line-height: 1.5em;

@@ -11,6 +11,7 @@ import { initializeApp, getApp } from "firebase/app";
 import { getFirestore, collection, addDoc, Timestamp, doc, deleteDoc } from "firebase/firestore";
 import { onSnapshot } from "firebase/firestore";
 import { useEffect } from "react";
+import { useAuth0 } from '@auth0/auth0-react';
 
 import LoginButton from "./components/LoginButton";
 import LogoutButton from "./components/LogoutButton";
@@ -26,6 +27,7 @@ try {
 }
 
 const db = getFirestore(firebaseApp);
+
 
 function MyCalendar({ onDateChange }) {
   const [value, setValue] = useState(new Date());
@@ -48,6 +50,9 @@ function App() {
   const [selectedCategory, setSelectedCategory] = useState("");
   const [selectedDate, setSelectedDate] = useState(null);
   
+  const { isAuthenticated, user } = useAuth0();
+  const userDatabaseRef = user ? collection(db, "Users", user.sub, "Transactions") : null;
+
 
 
 
@@ -72,6 +77,11 @@ function App() {
   };
 
   const addTransaction = async () => {
+    if (!userDatabaseRef) {
+      console.error("User not authenticated.");
+      return;
+    }
+
     console.log("Add transaction button clicked!");
     if (!date) {
       console.error("Date is required.");
@@ -85,7 +95,7 @@ function App() {
     };
     const transactionsRef = collection(db, "Transactions");
     try {
-      const docRef = await addDoc(transactionsRef, newTransaction);
+      const docRef = await addDoc(userDatabaseRef, newTransaction);
       console.log("Document written with ID: ", docRef.id);
       const updatedTransactions = [...transactions, { ...newTransaction, id: docRef.id }];
       setTransactions(updatedTransactions);
@@ -99,6 +109,12 @@ function App() {
   };
 
   const deleteTransaction = async (index) => {
+
+    if (!userDatabaseRef) {
+      console.error("User not authenticated.");
+      return;
+    }
+
     const transactionToDelete = transactions[index];
     const transactionRef = doc(db, "Transactions", transactionToDelete.id);
     try {
@@ -113,6 +129,10 @@ function App() {
 
 
   const fetchTransactions = () => {
+    if (!userDatabaseRef || !selectedDate) {
+      return;
+    }
+
     if (!selectedDate) {
       return;
     }
@@ -120,7 +140,7 @@ function App() {
     const start = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate(), 0, 0, 0);
     const end = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate(), 23, 59, 59);
 
-    const query = collection(db, "Transactions").where("date", ">=", start).where("date", "<=", end);
+    const query = query(collection(userDatabaseRef, "Transactions").where("date", ">=", start).where("date", "<=", end));
 
     return onSnapshot(query, (snapshot) => {
       const data = [];
@@ -209,7 +229,7 @@ function App() {
           </Row>
           <Row className="mt-4">
             <Col>
-              <Button variant="success" onClick={addTransaction}>
+              <Button variant="success"  onClick={addTransaction}>
                 Add Transaction
               </Button>
             </Col>

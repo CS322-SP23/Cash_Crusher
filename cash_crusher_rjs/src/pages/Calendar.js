@@ -10,6 +10,7 @@ import ModalComponent from './ModalComponent';
 import { getFirestore, collection, getDocs } from 'firebase/firestore';
 import { Timestamp } from 'firebase/firestore';
 import { Container } from 'react-bootstrap';
+import './Calendar_Style.css';
 const RenderHeader = ({ currentMonth, prevMonth, nextMonth }) => {
 return (
 <div className="header row">

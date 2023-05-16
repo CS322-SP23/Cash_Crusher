@@ -32,7 +32,7 @@
   }
 
   .cell.disabled {
-    color: #999; /* a gray color */
+    color: #99999985; /* a gray color */
   }
 
   .header, .days {

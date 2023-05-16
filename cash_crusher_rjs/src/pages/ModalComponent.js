@@ -26,6 +26,10 @@ setModalData(data);
 }
 }, [selectedDate]);
 
+// calculate the total amount of transactions
+const totalAmount = modalData ? modalData.reduce((acc, transaction) => acc + transaction.amount, 0) : 0;
+
+
 return (
 <Modal show={show} onHide={handleClose}>
 <Modal.Header closeButton>
@@ -36,6 +40,7 @@ return (
 </Modal.Header>
 <Modal.Body>
 {modalData && modalData.length > 0 ? (
+<div>
 <table style={{ borderCollapse: 'separate', borderSpacing: '14px' }}>
 <thead>
 <tr>
@@ -57,6 +62,8 @@ return (
 ))}
 </tbody>
 </table>
+ <p>Total amount: {totalAmount}</p>
+ </div>
 ) : (
 <p>No transactions found for this date.</p>
 )}

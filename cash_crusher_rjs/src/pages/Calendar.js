@@ -10,13 +10,15 @@ import ModalComponent from './ModalComponent';
 import { getFirestore, collection, getDocs } from 'firebase/firestore';
 import { Timestamp } from 'firebase/firestore';
 import { Container } from 'react-bootstrap';
+import './Calendar_Style.css';
+
 const RenderHeader = ({ currentMonth, prevMonth, nextMonth }) => {
 return (
 <div className="header row">
 <div className="col col-start">
 <span className="text">
 <span className="text month">{format(currentMonth, 'M')}/</span>
-{format(currentMonth, 'yyyy')}
+<span className="text year">{format(currentMonth, 'yyyy')}</span>
 </span>
 </div>
 <div className="col col-end">
@@ -112,6 +114,7 @@ setShowModal(true);
 };
 return (
   <Container fluid className="vh-100 bg-light text-dark py-5">
+
     <div className="calendar">
     <RenderHeader currentMonth={currentMonth}
       prevMonth={prevMonth} nextMonth={nextMonth} />

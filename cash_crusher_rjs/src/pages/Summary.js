@@ -242,34 +242,6 @@ const Summary = ({ transactions, expenses }) => {
 
 
           </Table>
-          
-        <Form>
-          <Form.Group>
-            <Form.Label>Add a category:</Form.Label>
-            <Form.Control
-              as="select"
-              value={selectedCategory}
-              onChange={(event) => setSelectedCategory(event.target.value)}
-            >
-              <option value="">Select a category...</option>
-              <option value="Food">Food</option>
-              <option value="Transportation">Transportation</option>
-              <option value="Entertainment">Entertainment</option>
-              <option value="Utilities">Utilities</option>
-              <option value="Savings">Savings</option>
-              <option value="Personal Spending">Personal Spending</option>
-            </Form.Control>
-        </Form.Group>
-        <Button
-          variant="success"
-          type="button"
-          onClick={handleAddCategory}
-          disabled={!selectedCategory}
-        >
-          Add
-        </Button>
-      </Form>
-
         </Col>
       </Row>
    

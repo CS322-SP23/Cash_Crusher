@@ -8,8 +8,7 @@ import Summary from "./pages/Summary";
 import ThreeTabs from "./ThreeTabs";
 import firebaseConfig from './firebase';
 import { initializeApp, getApp } from "firebase/app";
-import { getFirestore, collection, addDoc, Timestamp, doc, deleteDoc } from "firebase/firestore";
-import { onSnapshot } from "firebase/firestore";
+import { getFirestore, collection, addDoc, Timestamp, doc, deleteDoc, query, where, onSnapshot } from "firebase/firestore";
 import { useEffect } from "react";
 import { useAuth0 } from '@auth0/auth0-react';
 
@@ -53,7 +52,18 @@ function App() {
   const { isAuthenticated, user } = useAuth0();
   const userDatabaseRef = user ? collection(db, "Users", user.sub, "Transactions") : null;
 
-
+  useEffect(() => {
+    if (isAuthenticated && userDatabaseRef) {
+      const unsubscribe = onSnapshot(userDatabaseRef, (snapshot) => {
+        const data = [];
+        snapshot.forEach((doc) => {
+          data.push({ ...doc.data(), id: doc.id });
+        });
+        setTransactions(data);
+      });
+      return () => unsubscribe();
+    }
+  }, [isAuthenticated, userDatabaseRef]);
 
 
   const handleChange = (event) => {
@@ -132,17 +142,17 @@ function App() {
     if (!userDatabaseRef || !selectedDate) {
       return;
     }
-
-    if (!selectedDate) {
-      return;
-    }
-
+  
     const start = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate(), 0, 0, 0);
     const end = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate(), 23, 59, 59);
-
-    const query = query(collection(userDatabaseRef, "Transactions").where("date", ">=", start).where("date", "<=", end));
-
-    return onSnapshot(query, (snapshot) => {
+  
+    const queryRef = query(
+      collection(userDatabaseRef, "Transactions"),
+      where("date", ">=", start),
+      where("date", "<=", end)
+    );
+  
+    return onSnapshot(queryRef, (snapshot) => {
       const data = [];
       snapshot.forEach((doc) => {
         data.push({ ...doc.data(), id: doc.id });
@@ -150,14 +160,15 @@ function App() {
       setTransactions(data);
     });
   };
+  
 
   const handleDateChange = (date) => {
     setSelectedDate(date);
   };
 
   useEffect(() => {
-    fetchTransactions();
-  }, [selectedDate]);
+  fetchTransactions();
+}, [selectedDate, userDatabaseRef]);
 
   return (
     <>

@@ -14,7 +14,7 @@ const endDate = Timestamp.fromMillis(selectedDate.getTime() + 24 *
 60 * 60 * 1000);
 const db = getFirestore();
 const q = query(
-collection(db, 'Transactions'),
+collection(db, "Users", user.sub, "Transactions"),
 where('date', '>=', startDate),
 where('date', '<', endDate)
 );

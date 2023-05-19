@@ -11,6 +11,10 @@ import { getFirestore, collection, getDocs } from 'firebase/firestore';
 import { Timestamp } from 'firebase/firestore';
 import { Container } from 'react-bootstrap';
 import './Calendar_Style.css';
+import { useAuth0 } from '@auth0/auth0-react';
+
+const {inAuthenticated, user} = useAuth0();
+const userDatabaseRef = user ? collection(db, "Users", user.sub, "Transactions") : null;
 
 const RenderHeader = ({ currentMonth, prevMonth, nextMonth }) => {
 return (
@@ -96,7 +100,7 @@ setShowModal(true);
 const selectedTimestamp = Timestamp.fromDate(day);
 // Construct Firestore query to filter transactions by date
 const querySnapshot = await getDocs(
-collection(db, 'transactions').where('date', '==', selectedTimestamp)
+collection(db, "Users", user.sub, "Transactions").where('date', '==', selectedTimestamp)
 );
 // Map query snapshot to an array of transaction objects
 const transactions = querySnapshot.docs.map((doc) => {

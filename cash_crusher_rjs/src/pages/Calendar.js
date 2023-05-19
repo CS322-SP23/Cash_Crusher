@@ -11,6 +11,18 @@ import { getFirestore, collection, getDocs } from 'firebase/firestore';
 import { Timestamp } from 'firebase/firestore';
 import { Container } from 'react-bootstrap';
 import './Calendar_Style.css';
+import { useAuth0 } from '@auth0/auth0-react';
+import firebaseConfig from '../firebase';
+import { initializeApp, getApp } from "firebase/app";
+
+let firebaseApp;
+
+try {
+  firebaseApp = getApp();
+} catch (error) {
+  firebaseApp = initializeApp(firebaseConfig);
+}
+const db = getFirestore(firebaseApp);
 
 const RenderHeader = ({ currentMonth, prevMonth, nextMonth }) => {
 return (
@@ -77,12 +89,15 @@ days = [];
 return <div className="body">{rows}</div>;
 };
 const Calendar = () => {
+  
+const { isAuthenticated, user } = useAuth0();
+const userDatabaseRef = user ? collection(db, "Users", user.sub, "Transactions") : null;
+
 const [currentMonth, setCurrentMonth] = useState(new Date());
 const [selectedDate, setSelectedDate] = useState(null);
 const [modalData, setModalData] = useState(null);
 const [showModal, setShowModal] = useState(false);
 const navigate = useNavigate();
-const db = getFirestore();
 const prevMonth = () => {
 setCurrentMonth(subMonths(currentMonth, 1));
 };
@@ -96,7 +111,7 @@ setShowModal(true);
 const selectedTimestamp = Timestamp.fromDate(day);
 // Construct Firestore query to filter transactions by date
 const querySnapshot = await getDocs(
-collection(db, 'transactions').where('date', '==', selectedTimestamp)
+collection(db, "Users", user.sub, "Transactions").where('date', '==', selectedTimestamp)
 );
 // Map query snapshot to an array of transaction objects
 const transactions = querySnapshot.docs.map((doc) => {

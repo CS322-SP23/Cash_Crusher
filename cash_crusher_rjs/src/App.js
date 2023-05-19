@@ -52,6 +52,7 @@ function App() {
   const { isAuthenticated, user } = useAuth0();
   const userDatabaseRef = user ? collection(db, "Users", user.sub, "Transactions") : null;
 
+
   useEffect(() => {
     if (isAuthenticated && userDatabaseRef) {
       const unsubscribe = onSnapshot(userDatabaseRef, (snapshot) => {
@@ -64,6 +65,9 @@ function App() {
       return () => unsubscribe();
     }
   }, [isAuthenticated, userDatabaseRef]);
+
+  const totalAmount = transactions.reduce((acc, transaction) => acc + transaction.amount, 0);
+
 
 
   const handleChange = (event) => {
@@ -271,7 +275,11 @@ function App() {
           </Table>
         </Col>
         <Col xs={12} md={3} className="bg-light py-5">
-          
+            {/* Show total amount */}
+            <div className="text-center">
+            <h4><strong>Total Amount</strong></h4>
+              <h2>${totalAmount}</h2>
+            </div>
         </Col>
       </Row>
     </Container>

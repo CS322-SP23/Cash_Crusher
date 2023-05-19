@@ -5,7 +5,6 @@ import { format } from 'date-fns';
 import { getFirestore, collection, query, where, getDocs } from
 'firebase/firestore';
 import { Timestamp } from 'firebase/firestore';
-import { Icon } from '@iconify/react';
 const ModalComponent = ({ handleClose, show, selectedDate }) => {
 const [modalData, setModalData] = useState(null);
 useEffect(() => {
@@ -27,6 +26,10 @@ setModalData(data);
 }
 }, [selectedDate]);
 
+// calculate the total amount of transactions
+const totalAmount = modalData ? modalData.reduce((acc, transaction) => acc + transaction.amount, 0) : 0;
+
+
 return (
 <Modal show={show} onHide={handleClose}>
 <Modal.Header closeButton>
@@ -36,12 +39,13 @@ return (
 </Modal.Title>
 </Modal.Header>
 <Modal.Body>
-<Icon icon="bi:plus-circle" />
 {modalData && modalData.length > 0 ? (
-<table>
+<div>
+<table style={{ borderCollapse: 'separate', borderSpacing: '14px' }}>
 <thead>
 <tr>
 <th>Date</th>
+<th>Category</th>
 <th>Description</th>
 <th>Amount</th>
 </tr>
@@ -51,18 +55,21 @@ return (
 <tr key={transaction.id}>
 <td>{format(transaction.date.toDate(),
 'yyyy-MM-dd')}</td>
+<td>{transaction.category}</td>
 <td>{transaction.description}</td>
 <td>{transaction.amount}</td>
 </tr>
 ))}
 </tbody>
 </table>
+ <p>Total amount: {totalAmount}</p>
+ </div>
 ) : (
 <p>No transactions found for this date.</p>
 )}
 </Modal.Body>
 <Modal.Footer>
-<Button variant="secondary" onClick={handleClose}>
+<Button variant="success" onClick={handleClose}>
 Close
 </Button>
 </Modal.Footer>

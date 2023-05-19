@@ -126,10 +126,11 @@ function App() {
     }
 
     const transactionToDelete = transactions[index];
-    const transactionRef = doc(db, "Transactions", transactionToDelete.id);
+    const transactionRef = doc(userDatabaseRef, transactionToDelete.id);
+
     try {
       await deleteDoc(transactionRef);
-      const newTransactions = transactions.filter((transaction) => transaction.id !== transactionToDelete.id);
+      const newTransactions = transactions.filter((transaction) => transaction.id !== transactionToDelete.id && transaction.date.toMillis() !== transactionToDelete.date.toMillis());
       setTransactions(newTransactions);
     } catch (error) {
       console.error("Error deleting document: ", error);
@@ -146,11 +147,8 @@ function App() {
     const start = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate(), 0, 0, 0);
     const end = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate(), 23, 59, 59);
   
-    const queryRef = query(
-      collection(userDatabaseRef, "Transactions"),
-      where("date", ">=", start),
-      where("date", "<=", end)
-    );
+    const queryRef = query( transactionRef, where("date", ">=", start), where("date", "<=", end));
+
   
     return onSnapshot(queryRef, (snapshot) => {
       const data = [];

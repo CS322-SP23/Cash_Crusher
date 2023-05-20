@@ -4,9 +4,12 @@ import Button from 'react-bootstrap/Button';
 import { format } from 'date-fns';
 import { getFirestore, collection, query, where, getDocs } from
 'firebase/firestore';
+import { useAuth0 } from '@auth0/auth0-react';
 import { Timestamp } from 'firebase/firestore';
+
 const ModalComponent = ({ handleClose, show, selectedDate }) => {
-const [modalData, setModalData] = useState(null);
+    const [modalData, setModalData] = useState(null);
+    const { isAuthenticated, user } = useAuth0(); // Retrieve the user object from useAuth0
 useEffect(() => {
 if (selectedDate) {
 const startDate = Timestamp.fromDate(selectedDate);
@@ -14,7 +17,7 @@ const endDate = Timestamp.fromMillis(selectedDate.getTime() + 24 *
 60 * 60 * 1000);
 const db = getFirestore();
 const q = query(
-collection(db, 'Transactions'),
+collection(db, "Users", user.sub, "Transactions"),
 where('date', '>=', startDate),
 where('date', '<', endDate)
 );

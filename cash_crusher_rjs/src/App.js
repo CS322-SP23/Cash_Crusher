@@ -8,8 +8,7 @@ import Summary from "./pages/Summary";
 import ThreeTabs from "./ThreeTabs";
 import firebaseConfig from './firebase';
 import { initializeApp, getApp } from "firebase/app";
-import { getFirestore, collection, addDoc, Timestamp, doc, deleteDoc } from "firebase/firestore";
-import { onSnapshot } from "firebase/firestore";
+import { getFirestore, collection, addDoc, Timestamp, doc, deleteDoc, query, where, onSnapshot } from "firebase/firestore";
 import { useEffect } from "react";
 import { useAuth0 } from '@auth0/auth0-react';
 
@@ -52,7 +51,23 @@ function App() {
   
   const { isAuthenticated, user } = useAuth0();
   const userDatabaseRef = user ? collection(db, "Users", user.sub, "Transactions") : null;
+
+
+  useEffect(() => {
+    if (isAuthenticated && userDatabaseRef) {
+      const unsubscribe = onSnapshot(userDatabaseRef, (snapshot) => {
+        const data = [];
+        snapshot.forEach((doc) => {
+          data.push({ ...doc.data(), id: doc.id });
+        });
+        setTransactions(data);
+      });
+      return () => unsubscribe();
+    }
+  }, [isAuthenticated, userDatabaseRef]);
+
   const totalAmount = transactions.reduce((acc, transaction) => acc + transaction.amount, 0);
+
 
 
   const handleChange = (event) => {
@@ -115,10 +130,11 @@ function App() {
     }
 
     const transactionToDelete = transactions[index];
-    const transactionRef = doc(db, "Transactions", transactionToDelete.id);
+    const transactionRef = doc(userDatabaseRef, transactionToDelete.id);
+
     try {
       await deleteDoc(transactionRef);
-      const newTransactions = transactions.filter((transaction) => transaction.id !== transactionToDelete.id);
+      const newTransactions = transactions.filter((transaction) => transaction.id !== transactionToDelete.id && transaction.date.toMillis() !== transactionToDelete.date.toMillis());
       setTransactions(newTransactions);
     } catch (error) {
       console.error("Error deleting document: ", error);
@@ -127,21 +143,20 @@ function App() {
   
 
 
+  const transactionRef = collection(db, "Users");
+
   const fetchTransactions = () => {
     if (!userDatabaseRef || !selectedDate) {
       return;
     }
-
-    if (!selectedDate) {
-      return;
-    }
-
+  
     const start = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate(), 0, 0, 0);
     const end = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate(), 23, 59, 59);
+  
+    const queryRef = query( transactionRef, where("date", ">=", start), where("date", "<=", end));
 
-    const query = query(collection(userDatabaseRef, "Transactions").where("date", ">=", start).where("date", "<=", end));
-
-    return onSnapshot(query, (snapshot) => {
+  
+    return onSnapshot(queryRef, (snapshot) => {
       const data = [];
       snapshot.forEach((doc) => {
         data.push({ ...doc.data(), id: doc.id });
@@ -149,14 +164,15 @@ function App() {
       setTransactions(data);
     });
   };
+  
 
   const handleDateChange = (date) => {
     setSelectedDate(date);
   };
 
   useEffect(() => {
-    fetchTransactions();
-  }, [selectedDate]);
+  fetchTransactions();
+}, [selectedDate, userDatabaseRef]);
 
   return (
     <>

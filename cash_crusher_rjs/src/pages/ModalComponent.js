@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 import { format } from 'date-fns';
+import { useAuth0 } from '@auth0/auth0-react';
 import { getFirestore, collection, query, where, getDocs } from
 'firebase/firestore';
 import { Timestamp } from 'firebase/firestore';
@@ -29,6 +30,7 @@ setModalData(data);
 // calculate the total amount of transactions
 const totalAmount = modalData ? modalData.reduce((acc, transaction) => acc + transaction.amount, 0) : 0;
 
+const { isAuthenticated, user } = useAuth0();
 
 return (
 <Modal show={show} onHide={handleClose}>

@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useAuth0 } from '@auth0/auth0-react';
 import { Icon } from '@iconify/react';
 import { format, addMonths, subMonths, isSameMonth, isSameDay } from
 'date-fns';
@@ -11,7 +12,20 @@ import { getFirestore, collection, getDocs } from 'firebase/firestore';
 import { Timestamp } from 'firebase/firestore';
 import { Container } from 'react-bootstrap';
 import './Calendar_Style.css';
-import { useAuth0 } from '@auth0/auth0-react';
+
+import firebaseConfig from '../firebase';
+import { initializeApp, getApp } from "firebase/app";
+
+let firebaseApp;
+
+try {
+  firebaseApp = getApp();
+} catch (error) {
+  firebaseApp = initializeApp(firebaseConfig);
+}
+
+const db = getFirestore(firebaseApp);
+
 
 const {inAuthenticated, user} = useAuth0();
 const userDatabaseRef = user ? collection(db, "Users", user.sub, "Transactions") : null;
@@ -86,7 +100,7 @@ const [selectedDate, setSelectedDate] = useState(null);
 const [modalData, setModalData] = useState(null);
 const [showModal, setShowModal] = useState(false);
 const navigate = useNavigate();
-const db = getFirestore();
+
 const prevMonth = () => {
 setCurrentMonth(subMonths(currentMonth, 1));
 };

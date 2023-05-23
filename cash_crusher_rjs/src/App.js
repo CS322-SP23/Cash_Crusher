@@ -56,19 +56,10 @@ function App() {
 
 
   useEffect(() => {
-    if (isAuthenticated && userDatabaseRef) {
-      const unsubscribe = onSnapshot(userDatabaseRef, (snapshot) => {
-        const data = [];
-        snapshot.forEach((doc) => {
-          data.push({ ...doc.data(), id: doc.id });
-        });
-        setTransactions(data);
-      });
-      return () => unsubscribe();
-    }
-  }, [isAuthenticated, userDatabaseRef]);
+    fetchTransactions();
+  }, [startDate, userDatabaseRef]);
 
-  const totalAmount = transactions.reduce((acc, transaction) => acc + transaction.amount, 0);
+  const totalAmount = transactions? transactions.reduce((acc, transaction) => acc + transaction.amount, 0): 0;
 
 
 
@@ -146,12 +137,12 @@ function App() {
 
 
   const fetchTransactions = () => {
-    if (!userDatabaseRef || !selectedMonth) {
+    if (!userDatabaseRef || !startDate) {
       return;
     }
   
-    const start = new Date(selectedMonth.getFullYear(), selectedMonth.getMonth(), 1, 0, 0, 0);
-    const end = new Date(selectedMonth.getFullYear(), selectedMonth.getMonth() + 1, 0, 23, 59, 59);
+    const start = new Date(startDate.getFullYear(), startDate.getMonth(), 1, 0, 0, 0);
+    const end = new Date(startDate.getFullYear(), startDate.getMonth() + 1, 0, 23, 59, 59);
   
     const queryRef = query(userDatabaseRef, where("date", ">=", start), where("date", "<=", end));
   

@@ -5,6 +5,7 @@ import { initializeApp, getApp } from "firebase/app";
 import firebaseConfig from '../firebase';
 import { getFirestore, collection, getDocs } from "firebase/firestore";
 import "firebase/auth";
+import { useAuth0 } from '@auth0/auth0-react';
 
 let firebaseApp;
 
@@ -14,10 +15,13 @@ try {
   firebaseApp = initializeApp(firebaseConfig);
 }
 
+
 const db = getFirestore(firebaseApp);
-const transactionsRef = collection(db, "Transactions");
+
 
 const Summary = ({ transactions, expenses }) => {
+  const { isAuthenticated, user } = useAuth0();
+  const transactionsRef = collection(db, "Users", user.sub, "Transactions");
   const [data, setData] = useState([
     { id: 1, category: "Food", amount: 0, percentage: 0, color: "green" },
     { id: 2, category: "Transportation", amount: 0, percentage: 0, color: "green" },
@@ -114,7 +118,7 @@ const Summary = ({ transactions, expenses }) => {
   useEffect(() => {
 
     
-    getDocs(collection(db, "Transactions"))
+    getDocs(collection(db, "Users", user.sub, "Transactions"))
       .then((querySnapshot) => {
         const firebaseData = [];
         querySnapshot.forEach((doc) => {
@@ -242,6 +246,34 @@ const Summary = ({ transactions, expenses }) => {
 
 
           </Table>
+          
+        <Form>
+          <Form.Group>
+            <Form.Label>Add a category:</Form.Label>
+            <Form.Control
+              as="select"
+              value={selectedCategory}
+              onChange={(event) => setSelectedCategory(event.target.value)}
+            >
+              <option value="">Select a category...</option>
+              <option value="Food">Food</option>
+              <option value="Transportation">Transportation</option>
+              <option value="Entertainment">Entertainment</option>
+              <option value="Utilities">Utilities</option>
+              <option value="Savings">Savings</option>
+              <option value="Personal Spending">Personal Spending</option>
+            </Form.Control>
+        </Form.Group>
+        <Button
+          variant="success"
+          type="button"
+          onClick={handleAddCategory}
+          disabled={!selectedCategory}
+        >
+          Add
+        </Button>
+      </Form>
+
         </Col>
       </Row>
    
@@ -251,4 +283,3 @@ const Summary = ({ transactions, expenses }) => {
 };
 
 export default Summary;
-

@@ -3,7 +3,7 @@ import { Table, Col, Row, Form, Button, Container } from "react-bootstrap";
 import PieChart from "../PieChart";
 import { initializeApp, getApp } from "firebase/app";
 import firebaseConfig from '../firebase';
-import { getFirestore, collection, getDocs } from "firebase/firestore";
+import { getFirestore, collection, getDocs, querySnapshot } from "firebase/firestore";
 import "firebase/auth";
 import { useAuth0 } from '@auth0/auth0-react';
 
@@ -21,7 +21,15 @@ const db = getFirestore(firebaseApp);
 
 const Summary = ({ transactions, expenses }) => {
   const { isAuthenticated, user } = useAuth0();
-  const transactionsRef = collection(db, "Users", user.sub, "Transactions");
+  let transactionsRef = null;
+
+  if (user) {
+    transactionsRef = collection(db, "Users", user.sub, "Transactions");
+
+    // Rest of the logic related to 'transactionsRef'
+    // ...
+  }
+
   const [data, setData] = useState([
     { id: 1, category: "Food", amount: 0, percentage: 0, color: "green" },
     { id: 2, category: "Transportation", amount: 0, percentage: 0, color: "green" },
@@ -103,21 +111,11 @@ const Summary = ({ transactions, expenses }) => {
     .map((item) => ({ category: item.category, amount: item.amount })
   );
 
-  useEffect(() => {
-  // Set the initial state of the data array
-  setData([
-    { id: 1, category: "Food", amount: 0, percentage: 0 },
-    { id: 2, category: "Transportation", amount: 0, percentage: 0 },
-    { id: 3, category: "Entertainment", amount: 0, percentage: 0 },
-    { id: 4, category: "Utilities", amount: 0, percentage: 0 },
-    { id: 5, category: "Savings", amount: 0, percentage: 0 },
-    { id: 6, category: "Personal Spending", amount: 0, percentage: 0 },
-  ]);
-}, []);
+  
 
   useEffect(() => {
-
-    
+    // ...
+  
     getDocs(collection(db, "Users", user.sub, "Transactions"))
       .then((querySnapshot) => {
         const firebaseData = [];
@@ -127,61 +125,58 @@ const Summary = ({ transactions, expenses }) => {
         setFirebaseTransactions(firebaseData);
   
         if (firebaseData && firebaseData.length > 0) {
+          const updatedData = [...data]; // Create a new copy of data array
+  
           const totalAmount = firebaseData.reduce((acc, transaction) => {
-            const categoryIndex = data.findIndex(
+            const categoryIndex = updatedData.findIndex(
               (item) => item.category === transaction.category
             );
             if (categoryIndex !== -1) {
-              data[categoryIndex].amount += transaction.amount;
+              updatedData[categoryIndex].amount += transaction.amount;
               return acc + transaction.amount;
             }
             return acc;
           }, 0);
   
-          // Update the `data` state with the new Food category
-          setData([
-            ...data,
-            {
-              id: data.length + 1,
-              percentage: 0,
-              category: "Food",
-              amount: 0,
-            },
-          ]);
+          const updatedDataWithPercentages = updatePercentages(
+            updatedData,
+            totalAmount
+          );
   
-          // Recalculate the `totalAmount` variable and update the percentages
-          const updatedData = updatePercentages(data, totalAmount);
-  
-          // Update the `data` state with the updated data
-          setData(updatedData);
+          setData(updatedDataWithPercentages);
         }
       })
       .catch((error) => {
-        console.log("Error getting documents: ", error);
+        console.log("Error loading documents: ", error);
       });
   }, [transactionsRef]);
+  
   
   function updatePercentages(data, totalAmount) {
     if (totalAmount === 0) {
       return data;
     }
   
-    return data.map((item) => {
-      item.percentage = ((item.amount / totalAmount) * 100).toFixed(2);
-      item.amount = parseFloat(item.amount);
-      if (!isNaN(item.amount)) {
-        item.amount = item.amount.toFixed(2);
-      }
-      const backgroundColor = getColor(item.percentage);
+    const updatedData = data.map((item) => {
+      const percentage = ((item.amount / totalAmount) * 100).toFixed(2);
+      const amount = parseFloat(item.amount);
+      const backgroundColor = getColor(percentage);
+  
       return {
         ...item,
+        percentage,
+        amount: !isNaN(amount) ? amount.toFixed(2) : 0,
         color: backgroundColor,
         style: {
-          backgroundColor: backgroundColor
-        }
+          backgroundColor: backgroundColor,
+        },
       };
     });
+  
+    return updatedData;
   }
+  
+  
   
 
   function getColor(percentage) {

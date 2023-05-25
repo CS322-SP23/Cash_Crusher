@@ -48,25 +48,18 @@ function App() {
   const [amount, setAmount] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
   const [selectedDate, setSelectedDate] = useState(null);
+  const [selectedMonth, setSelectedMonth] = useState(new Date());
+
   
   const { isAuthenticated, user } = useAuth0();
   const userDatabaseRef = user ? collection(db, "Users", user.sub, "Transactions") : null;
 
 
   useEffect(() => {
-    if (isAuthenticated && userDatabaseRef) {
-      const unsubscribe = onSnapshot(userDatabaseRef, (snapshot) => {
-        const data = [];
-        snapshot.forEach((doc) => {
-          data.push({ ...doc.data(), id: doc.id });
-        });
-        setTransactions(data);
-      });
-      return () => unsubscribe();
-    }
-  }, [isAuthenticated, userDatabaseRef]);
+    fetchTransactions();
+  }, [startDate, userDatabaseRef]);
 
-  const totalAmount = transactions.reduce((acc, transaction) => acc + transaction.amount, 0);
+  const totalAmount = transactions? transactions.reduce((acc, transaction) => acc + transaction.amount, 0): 0;
 
 
 
@@ -144,15 +137,14 @@ function App() {
 
 
   const fetchTransactions = () => {
-    if (!userDatabaseRef || !selectedDate) {
+    if (!userDatabaseRef || !startDate) {
       return;
     }
   
-    const start = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate(), 0, 0, 0);
-    const end = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate(), 23, 59, 59);
+    const start = new Date(startDate.getFullYear(), startDate.getMonth(), 1, 0, 0, 0);
+    const end = new Date(startDate.getFullYear(), startDate.getMonth() + 1, 0, 23, 59, 59);
   
-    const queryRef = query( transactionRef, where("date", ">=", start), where("date", "<=", end));
-
+    const queryRef = query(userDatabaseRef, where("date", ">=", start), where("date", "<=", end));
   
     return onSnapshot(queryRef, (snapshot) => {
       const data = [];
@@ -163,9 +155,11 @@ function App() {
     });
   };
   
+  
 
   const handleDateChange = (date) => {
     setSelectedDate(date);
+    setSelectedMonth(date);
   };
 
   useEffect(() => {
@@ -275,12 +269,13 @@ function App() {
           </Table>
         </Col>
         <Col xs={12} md={3} className="bg-light py-5">
-            {/* Show total amount */}
-            <div className="text-center">
-            <h4><strong>Total Amount</strong></h4>
-              <h2>${totalAmount}</h2>
-            </div>
-        </Col>
+        {/* Show total amount */}
+        <div className="text-center">
+          <h4><strong>Total Amount of {startDate.toLocaleString("en-US", { month: "long" })}</strong></h4>
+          <h2>${totalAmount}</h2>
+        </div>
+      </Col>
+
       </Row>
     </Container>
     </>

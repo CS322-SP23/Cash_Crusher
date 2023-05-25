@@ -30,8 +30,7 @@ const Summary = ({ transactions, expenses }) => {
     { id: 3, category: "Entertainment", amount: 0, percentage: 0, color: "green" },
     { id: 4, category: "Utilities", amount: 0, percentage: 0, color: "green" },
     { id: 5, category: "Savings", amount: 0, percentage: 0, color: "green" },
-    { id: 6, category: "Personal Spending", amount: 0, percentage: 0, color: "green" },
-    { id: 6, category: "Shopping", amount: 0, percentage: 0, color: "green" },
+    { id: 6, category: "Personal Spending", amount: 0, percentage: 0, color: "green" }
   ]);
   
   

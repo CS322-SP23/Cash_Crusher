@@ -3,7 +3,7 @@ import { Table, Col, Row, Form, Button, Container } from "react-bootstrap";
 import PieChart from "../PieChart";
 import { initializeApp, getApp } from "firebase/app";
 import firebaseConfig from '../firebase';
-import { getFirestore, collection, getDocs } from "firebase/firestore";
+import { getFirestore, collection, getDocs, querySnapshot } from "firebase/firestore";
 import "firebase/auth";
 import { useAuth0 } from '@auth0/auth0-react';
 
@@ -21,7 +21,9 @@ const db = getFirestore(firebaseApp);
 
 const Summary = ({ transactions, expenses }) => {
   const { isAuthenticated, user } = useAuth0();
-  const transactionsRef = collection(db, "Users", user.sub, "Transactions");
+  const userId = user?.sub || null;
+  const transactionsRef = userId ? collection(db, "Users", userId, "Transactions") : null;
+
   const [data, setData] = useState([
     { id: 1, category: "Food", amount: 0, percentage: 0, color: "green" },
     { id: 2, category: "Transportation", amount: 0, percentage: 0, color: "green" },
@@ -54,9 +56,7 @@ const Summary = ({ transactions, expenses }) => {
     } else {
       // Add the category to the array if it is not already selected
       selectedCategoriesCopy.push(category);
-      const categoryExists = data.some(
-        (item) => item.category === category
-      );
+      const categoryExists = data.some((item) => item.category === category);
       if (!categoryExists) {
         const newCategory = {
           id: data.length + 1,
@@ -64,7 +64,7 @@ const Summary = ({ transactions, expenses }) => {
           category: category,
           amount: 0,
         };
-        setData([...data, newCategory]);
+        setData((prevData) => [...prevData, newCategory]);
       }
     }
     setSelectedCategories(selectedCategoriesCopy);
@@ -77,7 +77,7 @@ const Summary = ({ transactions, expenses }) => {
     const categoryExists = data.some(
       (item) => item.category === selectedCategory
     );
-
+  
     if (categoryExists) {
       alert(`Category "${selectedCategory}" already exists.`);
     } else {
@@ -87,7 +87,7 @@ const Summary = ({ transactions, expenses }) => {
         category: selectedCategory,
         amount: 0,
       };
-      setData([...data, newCategory]);
+      setData((prevData) => [...prevData, newCategory]);
       setSelectedCategory("");
     }
   };
@@ -103,85 +103,81 @@ const Summary = ({ transactions, expenses }) => {
     .map((item) => ({ category: item.category, amount: item.amount })
   );
 
-  useEffect(() => {
-  // Set the initial state of the data array
-  setData([
-    { id: 1, category: "Food", amount: 0, percentage: 0 },
-    { id: 2, category: "Transportation", amount: 0, percentage: 0 },
-    { id: 3, category: "Entertainment", amount: 0, percentage: 0 },
-    { id: 4, category: "Utilities", amount: 0, percentage: 0 },
-    { id: 5, category: "Savings", amount: 0, percentage: 0 },
-    { id: 6, category: "Personal Spending", amount: 0, percentage: 0 },
-  ]);
-}, []);
-
-  useEffect(() => {
-
-    
-    getDocs(collection(db, "Users", user.sub, "Transactions"))
-      .then((querySnapshot) => {
-        const firebaseData = [];
-        querySnapshot.forEach((doc) => {
-          firebaseData.push({ id: doc.id, ...doc.data() });
-        });
-        setFirebaseTransactions(firebaseData);
   
-        if (firebaseData && firebaseData.length > 0) {
-          const totalAmount = firebaseData.reduce((acc, transaction) => {
-            const categoryIndex = data.findIndex(
-              (item) => item.category === transaction.category
-            );
-            if (categoryIndex !== -1) {
-              data[categoryIndex].amount += transaction.amount;
-              return acc + transaction.amount;
+
+  useEffect(() => {
+    if (userId && transactionsRef) {
+      getDocs(transactionsRef)
+        .then((querySnapshot) => {
+          const firebaseData = [];
+          querySnapshot.forEach((doc) => {
+            firebaseData.push({ id: doc.id, ...doc.data() });
+          });
+          setFirebaseTransactions(firebaseData);
+  
+          if (firebaseData && firebaseData.length > 0) {
+            const updatedData = [...data]; // Create a new copy of the data array
+            let hasDataChanged = false;
+  
+            // Calculate the total amount from the Firebase transactions
+            const totalAmount = firebaseData.reduce((acc, transaction) => {
+              const categoryIndex = updatedData.findIndex(
+                (item) => item.category === transaction.category
+              );
+              if (categoryIndex !== -1) {
+                updatedData[categoryIndex].amount += transaction.amount;
+                hasDataChanged = true; // Set the flag if any transaction amount was updated
+                return acc + transaction.amount;
+              }
+              return acc;
+            }, 0);
+  
+            if (hasDataChanged) {
+              const updatedDataWithPercentages = updatePercentages(
+                updatedData,
+                totalAmount
+              );
+              setData(updatedDataWithPercentages);
             }
-            return acc;
-          }, 0);
+          }
+        })
+        .catch((error) => {
+          console.log("Error loading documents: ", error);
+        });
+    }
+  }, [transactionsRef, userId, data]); // Remove 'transactions' from the dependency array
   
-          // Update the `data` state with the new Food category
-          setData([
-            ...data,
-            {
-              id: data.length + 1,
-              percentage: 0,
-              category: "Food",
-              amount: 0,
-            },
-          ]);
   
-          // Recalculate the `totalAmount` variable and update the percentages
-          const updatedData = updatePercentages(data, totalAmount);
   
-          // Update the `data` state with the updated data
-          setData(updatedData);
-        }
-      })
-      .catch((error) => {
-        console.log("Error getting documents: ", error);
-      });
-  }, [transactionsRef]);
+  
+
+  
   
   function updatePercentages(data, totalAmount) {
     if (totalAmount === 0) {
       return data;
     }
   
-    return data.map((item) => {
-      item.percentage = ((item.amount / totalAmount) * 100).toFixed(2);
-      item.amount = parseFloat(item.amount);
-      if (!isNaN(item.amount)) {
-        item.amount = item.amount.toFixed(2);
-      }
-      const backgroundColor = getColor(item.percentage);
+    const updatedData = data.map((item) => {
+      const percentage = ((item.amount / totalAmount) * 100).toFixed(2);
+      const amount = parseFloat(item.amount);
+      const backgroundColor = getColor(percentage);
+  
       return {
         ...item,
+        percentage,
+        amount: !isNaN(amount) ? amount.toFixed(2) : 0,
         color: backgroundColor,
         style: {
-          backgroundColor: backgroundColor
-        }
+          backgroundColor: backgroundColor,
+        },
       };
     });
+  
+    return updatedData;
   }
+  
+  
   
 
   function getColor(percentage) {

@@ -76,12 +76,15 @@ function App() {
         setCategory(value);
         break;
       case "amount":
-        setAmount(value);
+        if (value >= 0) {
+          setAmount(value);
+        }
         break;
       default:
         break;
     }
   };
+  
 
   const addTransaction = async () => {
     if (!userDatabaseRef) {

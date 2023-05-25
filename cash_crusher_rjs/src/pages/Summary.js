@@ -116,27 +116,27 @@ const Summary = ({ transactions, expenses }) => {
           setFirebaseTransactions(firebaseData);
   
           if (firebaseData && firebaseData.length > 0) {
-            const updatedData = [...data]; // Create a new copy of data array
+            const updatedData = [...data]; // Create a new copy of the data array
+            let hasDataChanged = false;
   
+            // Calculate the total amount from the Firebase transactions
             const totalAmount = firebaseData.reduce((acc, transaction) => {
               const categoryIndex = updatedData.findIndex(
                 (item) => item.category === transaction.category
               );
               if (categoryIndex !== -1) {
                 updatedData[categoryIndex].amount += transaction.amount;
+                hasDataChanged = true; // Set the flag if any transaction amount was updated
                 return acc + transaction.amount;
               }
               return acc;
             }, 0);
   
-            const updatedDataWithPercentages = updatePercentages(
-              updatedData,
-              totalAmount
-            );
-  
-            // Check if the updated data is different from the current data in state
-            const hasDataChanged = JSON.stringify(updatedDataWithPercentages) !== JSON.stringify(data);
             if (hasDataChanged) {
+              const updatedDataWithPercentages = updatePercentages(
+                updatedData,
+                totalAmount
+              );
               setData(updatedDataWithPercentages);
             }
           }
@@ -145,7 +145,9 @@ const Summary = ({ transactions, expenses }) => {
           console.log("Error loading documents: ", error);
         });
     }
-  }, [transactionsRef, userId, data]); // Add 'data' to the dependency array
+  }, [transactionsRef, userId, data]); // Remove 'transactions' from the dependency array
+  
+  
   
   
 

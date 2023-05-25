@@ -145,7 +145,8 @@ const Summary = ({ transactions, expenses }) => {
           console.log("Error loading documents: ", error);
         });
     }
-  }, [transactionsRef, userId]);
+  }, [transactionsRef, userId, data]); // Add 'data' to the dependency array
+  
   
 
   

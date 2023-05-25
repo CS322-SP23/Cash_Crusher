@@ -21,14 +21,8 @@ const db = getFirestore(firebaseApp);
 
 const Summary = ({ transactions, expenses }) => {
   const { isAuthenticated, user } = useAuth0();
-  let transactionsRef = null;
-
-  if (user) {
-    transactionsRef = collection(db, "Users", user.sub, "Transactions");
-
-    // Rest of the logic related to 'transactionsRef'
-    // ...
-  }
+  const userId = user?.sub || null;
+  const transactionsRef = userId ? collection(db, "Users", userId, "Transactions") : null;
 
   const [data, setData] = useState([
     { id: 1, category: "Food", amount: 0, percentage: 0, color: "green" },
@@ -62,9 +56,7 @@ const Summary = ({ transactions, expenses }) => {
     } else {
       // Add the category to the array if it is not already selected
       selectedCategoriesCopy.push(category);
-      const categoryExists = data.some(
-        (item) => item.category === category
-      );
+      const categoryExists = data.some((item) => item.category === category);
       if (!categoryExists) {
         const newCategory = {
           id: data.length + 1,
@@ -72,7 +64,7 @@ const Summary = ({ transactions, expenses }) => {
           category: category,
           amount: 0,
         };
-        setData([...data, newCategory]);
+        setData((prevData) => [...prevData, newCategory]);
       }
     }
     setSelectedCategories(selectedCategoriesCopy);
@@ -85,7 +77,7 @@ const Summary = ({ transactions, expenses }) => {
     const categoryExists = data.some(
       (item) => item.category === selectedCategory
     );
-
+  
     if (categoryExists) {
       alert(`Category "${selectedCategory}" already exists.`);
     } else {
@@ -95,7 +87,7 @@ const Summary = ({ transactions, expenses }) => {
         category: selectedCategory,
         amount: 0,
       };
-      setData([...data, newCategory]);
+      setData((prevData) => [...prevData, newCategory]);
       setSelectedCategory("");
     }
   };
@@ -114,42 +106,48 @@ const Summary = ({ transactions, expenses }) => {
   
 
   useEffect(() => {
-    // ...
+    if (userId && transactionsRef) {
+      getDocs(transactionsRef)
+        .then((querySnapshot) => {
+          const firebaseData = [];
+          querySnapshot.forEach((doc) => {
+            firebaseData.push({ id: doc.id, ...doc.data() });
+          });
+          setFirebaseTransactions(firebaseData);
   
-    getDocs(collection(db, "Users", user.sub, "Transactions"))
-      .then((querySnapshot) => {
-        const firebaseData = [];
-        querySnapshot.forEach((doc) => {
-          firebaseData.push({ id: doc.id, ...doc.data() });
-        });
-        setFirebaseTransactions(firebaseData);
+          if (firebaseData && firebaseData.length > 0) {
+            const updatedData = [...data]; // Create a new copy of data array
   
-        if (firebaseData && firebaseData.length > 0) {
-          const updatedData = [...data]; // Create a new copy of data array
+            const totalAmount = firebaseData.reduce((acc, transaction) => {
+              const categoryIndex = updatedData.findIndex(
+                (item) => item.category === transaction.category
+              );
+              if (categoryIndex !== -1) {
+                updatedData[categoryIndex].amount += transaction.amount;
+                return acc + transaction.amount;
+              }
+              return acc;
+            }, 0);
   
-          const totalAmount = firebaseData.reduce((acc, transaction) => {
-            const categoryIndex = updatedData.findIndex(
-              (item) => item.category === transaction.category
+            const updatedDataWithPercentages = updatePercentages(
+              updatedData,
+              totalAmount
             );
-            if (categoryIndex !== -1) {
-              updatedData[categoryIndex].amount += transaction.amount;
-              return acc + transaction.amount;
+  
+            // Check if the updated data is different from the current data in state
+            const hasDataChanged = JSON.stringify(updatedDataWithPercentages) !== JSON.stringify(data);
+            if (hasDataChanged) {
+              setData(updatedDataWithPercentages);
             }
-            return acc;
-          }, 0);
+          }
+        })
+        .catch((error) => {
+          console.log("Error loading documents: ", error);
+        });
+    }
+  }, [transactionsRef, userId]);
   
-          const updatedDataWithPercentages = updatePercentages(
-            updatedData,
-            totalAmount
-          );
-  
-          setData(updatedDataWithPercentages);
-        }
-      })
-      .catch((error) => {
-        console.log("Error loading documents: ", error);
-      });
-  }, [transactionsRef]);
+
   
   
   function updatePercentages(data, totalAmount) {
